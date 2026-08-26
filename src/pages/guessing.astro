@@ -67,11 +67,11 @@ const record      = `${wins}–${losses}${pushes > 0 ? `–${pushes}` : ''}`;
               <span class={`badge badge--${isWin ? 'win' : isLoss ? 'loss' : isPending ? 'pending' : 'push'}`}>
                 {isWin ? 'Win' : isLoss ? 'Loss' : isPending ? 'Pending' : 'Push'}
               </span>
-              <span class="meta" style="font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-muted);">
+              <span class="meta" style="font-size:var(--step--2); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-muted);">
                 {entry.data.category}
               </span>
               <span class="meta" style="font-size:0.8rem; font-weight:600;">{entry.data.event}</span>
-              <span class="meta" style="font-size:0.75rem; color:var(--ink-muted);">
+              <span class="meta" style="font-size:var(--step--2); color:var(--ink-muted);">
                 {entry.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </span>
             </div>

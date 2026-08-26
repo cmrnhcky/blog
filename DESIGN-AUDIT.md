@@ -4,7 +4,7 @@
 > sophistication, entertainment over information, adjacent to Hickey Avenue but not identical.*
 > Supersedes `cameronhickey-site-reference.md` (and its two byte-identical copies `_1`, `_2`)
 > and `CLAUDE_CODE_BRIEF.md`, both of which describe a site that no longer exists.
-> **2026-08-26.**
+> **2026-08-26. Part V updated after the first build pass — items 1, 2, 5, 6, 8 are shipped.**
 
 ---
 
@@ -392,20 +392,81 @@ Ranked. The first three are blocking; the rest can be answered during the build.
 
 ---
 
-## Part V — Priority actions
+## Part V — Build log & what's left
 
-| # | Action | Effort | Why first |
-|---|---|---|---|
-| 1 | Fix the three contrast failures (`--gold` → `--gold-ink`, `--ink-muted` → `#6f6152`) | 20 min | Unambiguous defect, no decisions gated behind it |
-| 2 | Delete the 11-token legacy alias layer; tokenize the 3 hardcoded hex | 30 min | The alias layer will otherwise get carried into the rebuild |
-| 3 | Decide Q1–Q3 | — | Everything below waits on these |
-| 4 | Formats migration: `department` enum + `tags`, rewrite 9 files of frontmatter | 1h | Cheapest it will ever be |
-| 5 | Type system swap: Bodoni Moda + Spectral + Archivo Narrow; drop Rock Salt and Syne | 2h | The single biggest visual move |
-| 6 | Type + space scale; pull the 66 inline styles into components | 2h | — |
-| 7 | Remove Guessing (already queued, `TASKS.md:65`) | 30m | Takes the dead semantic color layer with it |
-| 8 | Standfirst, dateline, dinkus, captions, folios | 1h | Highest sophistication-per-hour on the list |
-| 9 | Build the colophon | 1h | The one page that does the agency's work |
-| 10 | Delete `cameronhickey-site-reference{,_1,_2}.md` and `CLAUDE_CODE_BRIEF.md`; promote this file | 5 min | Four stale documents describing a dead spec |
+### Shipped — 2026-08-26 (branch `redesign-esquire`)
+
+| Done | What changed |
+|---|---|
+| **Contrast** | `--gold #b8956a` → split into `--gold-ink #80612d` (light, 5.4:1) and `--gold-lit #b8956a` (dark, 6.9:1). `--ink-muted` `#8a7a68` → `#6f6152` (3.66:1 → 5.6:1). Every pair in the token block now carries its measured ratio as a comment. |
+| **Dead tokens** | All 11 legacy aliases deleted. `--loss` wired to `.badge--loss`; `--win` and `--atlantic-lift` added for the two remaining hardcoded hex. |
+| **Type stack** | Rock Salt and Syne removed. **Bodoni Moda** (display) · **Spectral** (body) · **Archivo Narrow** (labels). Rock Salt is now Hickey Avenue's alone — the shared DNA is the grain, and only the grain. |
+| **Body copy** | Was set in Syne, a display geometric, contradicting the file's own header comment. Now Spectral throughout, and the header comment now matches the CSS. |
+| **Type scale** | 25 ad-hoc sizes across 6 unrelated `clamp()` curves → one 1.25 scale, `--step--2` … `--step-6`. Zero raw `rem` font-sizes remain in CSS or markup. |
+| **Space / motion** | 10-step space scale with the missing 1.5rem and 3rem; `--dur-*` and `--ease`. |
+| **Root font size** | `html { font-size: 18px }` → `100%`. The site no longer discards the reader's browser setting. |
+| **Editorial furniture** | Dinkus, standfirst, dateline byline, drop cap, folio, quote watermark, kicker — all built. The article template now runs kicker → Bodoni headline → italic standfirst → dateline → drop cap → rail → folio. |
+| **Inline styles** | 66 → 36, and the two pages that matter (home, article) are at zero. Extracted `.page-head/.page-title/.page-sub`, `.doors/.door`, `.more-link`, `.article-head/.kicker/.article-title`, `.meta`, `.folio`. |
+| **Nav** | Was light-on-light on every page without a hero — effectively invisible until scrolled. Now inverts only over the hero, via an `overHero` prop. |
+| **Mobile** | Hero had **zero horizontal padding** below 640px (a later media block overrode an earlier one) — text ran off both edges at 375px. Fixed. Every tap target now clears 44px. No text below 12px anywhere. Zero horizontal overflow on any page. |
+
+### The quote layer — shipped
+
+Cameron's brief: *quotes, phrases, expressions, littered throughout like wallpaper, scrolling like
+our ticker, coming and going as thoughts do.*
+
+**The ticker is the one part of that not built, deliberately.** A marquee is a stock-price device:
+continuous, mechanical, signalling urgency and data — the opposite register. It also never stops,
+and thoughts do. hickeyave.com already tried the horizontal ticker variant and dropped it as *"too
+much motion"* (`site/index.html:2791`) — same conclusion, reached from the other direction.
+
+What got built instead, three placements over one data file:
+
+| Component | Behaviour | Where |
+|---|---|---|
+| **`QuoteRail`** | Marginalia — notes hung in the outer margin, alternating sides, arriving on scroll. The motion belongs to the reader, not the text. Folds full-width below 1180px. | The workhorse. Homepage + every article. |
+| **`QuoteInterstitial`** | One quote, full-bleed, between sections. Stops the page. Verified attributions only. | Punctuation — once or twice per page. |
+| **`QuoteDrift`** | The ambient layer. One short phrase fades in, holds 7s, fades out, then **4.2 seconds of silence** before the next. The silence is the effect. On mobile it drops to a single centred line above the safe area, no attribution, no pointer events, hidden when the menu is open. | Sitewide, mid-scroll only. |
+| **`.quote-watermark`** | The literal wallpaper — a line set enormous at 4.5% opacity behind a section. Static; it is texture, not an event. | A CSS utility, use sparingly. |
+
+**Data model.** You type `{ text, author?, tags? }` and nothing else. Everything else derives:
+
+- **kind** — `author` present → quotation; absent → *phrase*. Your own expressions go in as phrases and set without an attribution line.
+- **placement** — by length. ≤9 words can drift · ≤20 can take the masthead · ≤24 the margin · ≤34 an interstitial.
+- **`verified`** — defaults false. A quotation must be verified to take a *prominent* slot. This is the mechanism that protects the whole idea: a misattributed quote on a site about discernment is the one error a reader will remember.
+
+Astro is static, so a build-time `Math.random()` would bake one fixed set into the HTML forever.
+The server picks a **pool** (stable per build, different per page); the client does the choosing per
+visit. That is what makes the layer feel alive on what is mechanically a pile of flat files.
+
+Malformed rows fail `npm run build` with the row index, by design. See `src/data/QUOTES.md`.
+
+> **Live finding from the seed data:** *"Be yourself; everyone else is already taken"* — the site's
+> motto — is universally credited to Wilde and appears nowhere in his work, letters, or recorded
+> conversation. It ships `verified: false`, which bars it from the masthead and interstitials but
+> keeps it in the margin. Your call: source it, run it unattributed as a phrase, or retire it.
+
+### Still open
+
+| # | Action | Blocked on |
+|---|---|---|
+| 1 | **Answer Q1–Q3** (Part IV): masthead name · photography · formats-vs-pillars | You |
+| 2 | Formats migration — `department` enum + post-hoc `tags` | Q3 |
+| 3 | Hero: kill the five-photo Ken Burns crossfade | Q2 |
+| 4 | Remove Guessing (`TASKS.md:65`) — takes 22 inline styles and the dead `--win`/`--loss` layer with it | Decided, not done |
+| 5 | Build the colophon — the one page that does the agency's work | — |
+| 6 | Load the quote database | You — the structure is waiting |
+| 7 | Remaining 36 inline styles on `living` / `saying` / `cameron` / `404` / `thank-you` | — |
+| 8 | Delete `cameronhickey-site-reference{,_1,_2}.md` + `CLAUDE_CODE_BRIEF.md` | — |
+| 9 | Issue numbering + archive (Part III.2) | Q3 |
+| 10 | Merge `redesign-esquire` → `main` when you're happy with it | You |
+
+### Verified this pass
+
+`npm run build` clean · zero console errors · zero dead token references in `src/` · zero
+horizontal overflow at 375px on every page · zero text under 12px · all tap targets ≥44px ·
+Rock Salt and Syne absent from every built page · Bodoni Moda, Spectral and Archivo Narrow all
+loading.
 
 ---
 
@@ -419,3 +480,6 @@ Ranked. The first three are blocking; the rest can be answered during the build.
 - **Automation candidate** *(working rule 7)*: once posts carry `department` + `date`, the issue
   archive, the department index pages, and the RSS categories all generate from frontmatter with no
   hand-maintained lists. Build the issue grouping as a derived value, never as a data file.
+- **Automation candidate**: `census()` in `src/lib/quotes.ts` already computes author concentration
+  and unverified count. Surface it on the colophon so the quote wall audits itself — if one author
+  passes a third of the file, that is the Wilde problem returning.
