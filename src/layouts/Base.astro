@@ -1,0 +1,165 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'The personal site of Cameron Hickey — founder of Hickey Avenue. Notes on value over price: running, whiskey, fatherhood, and the math of a good bet.',
+  ogImage = '/og-default.svg',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(ogImage, Astro.site);
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <title>{title === 'Cameron Hickey' ? title : `${title} — Cameron Hickey`}</title>
+    <meta name="description" content={description} />
+
+    <!-- OG / Social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <!-- RSS -->
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Cameron Hickey"
+      href="/rss.xml"
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Preload first hero image for LCP -->
+    <link rel="preload" as="image" href="/hero/IMG_1369.jpeg" fetchpriority="high" />
+
+    <!-- Google Fonts — preconnect before stylesheet to avoid render block -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rock+Salt&family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Syne:wght@400;500;600;700&display=swap" />
+
+    <!-- GA4 — TODO: replace G-XXXXXXXXXX with real Measurement ID before deploy -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { window.dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+  </head>
+  <body>
+    <nav class="site-nav" aria-label="Main navigation" id="site-nav">
+      <div class="container--wide site-nav__inner">
+        <a href="/" class="site-nav__logo">Cameron Hickey</a>
+        <ul class="site-nav__links">
+          <li><a href="/living" class={isActive('/living') ? 'nav-active' : ''}>Living</a></li>
+          <li><a href="/saying" class={isActive('/saying') ? 'nav-active' : ''}>Saying</a></li>
+          <li><a href="/guessing" class={isActive('/guessing') ? 'nav-active' : ''}>Guessing</a></li>
+          <li><a href="/cameron" class={isActive('/cameron') ? 'nav-active' : ''}>Cameron</a></li>
+        </ul>
+        <button class="nav-burger" aria-label="Toggle menu" aria-expanded="false" id="nav-burger">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile overlay menu -->
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true">
+      <a href="/living" class={`nav-overlay-link${isActive('/living') ? ' nav-active' : ''}`}>Living</a>
+      <a href="/saying" class={`nav-overlay-link${isActive('/saying') ? ' nav-active' : ''}`}>Saying</a>
+      <a href="/guessing" class={`nav-overlay-link${isActive('/guessing') ? ' nav-active' : ''}`}>Guessing</a>
+      <a href="/cameron" class={`nav-overlay-link${isActive('/cameron') ? ' nav-active' : ''}`}>Cameron</a>
+    </div>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container--wide site-footer__inner">
+        <div>
+          <a href="/" class="site-footer__logo">Cameron Hickey</a>
+          <p class="site-footer__copy">&copy; 2026 Cameron Hickey &middot; Florida, USA</p>
+        </div>
+        <ul class="site-footer__socials">
+          <li><a href="https://www.youtube.com/@cmrnhcky" target="_blank" rel="noopener">YouTube</a></li>
+          <li><a href="https://twitter.com/cmrnhcky" target="_blank" rel="noopener">X</a></li>
+          <li><a href="https://instagram.com/cmrnhcky" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.linkedin.com/in/cmrnhcky/" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+      <div class="container--wide">
+        <p class="site-footer__ha">
+          Digital infrastructure for growing business &mdash; <a href="https://hickeyave.com" target="_blank" rel="noopener">hickeyave.com</a>
+        </p>
+      </div>
+    </footer>
+
+    <!-- Nav scroll + burger -->
+    <script is:inline>
+      (function () {
+        var nav    = document.getElementById('site-nav');
+        var burger = document.getElementById('nav-burger');
+        var overlay = document.getElementById('nav-overlay');
+
+        // Scroll: add .scrolled when past the hero
+        function onScroll() {
+          if (window.scrollY > 60) {
+            nav.classList.add('scrolled');
+          } else {
+            nav.classList.remove('scrolled');
+          }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+
+        // Burger toggle
+        burger.addEventListener('click', function () {
+          var open = document.body.classList.toggle('nav-open');
+          burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+          overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+        });
+
+        // Close overlay on link click
+        overlay.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', function () {
+            document.body.classList.remove('nav-open');
+            burger.setAttribute('aria-expanded', 'false');
+            overlay.setAttribute('aria-hidden', 'true');
+          });
+        });
+      })();
+    </script>
+
+    <!-- Scroll-triggered fade-up for sections -->
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); observer.unobserve(e.target); } }),
+        { threshold: 0.1 }
+      );
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    </script>
+  </body>
+</html>

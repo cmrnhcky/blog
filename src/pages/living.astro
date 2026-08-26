@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+const entries = await getCollection('living');
+const sorted = entries.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+const youtubeId = (input: string) => {
+  const match = input.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : input;
+};
+---
+
+<Base
+  title="Living"
+  description="Everything, in order. Running, drinking, parenting, gambling — the feed."
+>
+  <section class="section--lg">
+    <div class="container">
+
+      <h1 style="font-family: var(--font-script); font-size: clamp(1.6rem, 4vw, 2.4rem); margin-bottom: 0.5rem;">
+        Living.
+      </h1>
+      <p class="sans" style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic; margin-bottom: 3rem;">
+        Everything, in order.
+      </p>
+
+      <div class="stream">
+        {sorted.map(async (entry) => {
+          const { Content } = await render(entry);
+          const isImage   = entry.data.type === 'image';
+          const isYoutube = entry.data.type === 'youtube';
+          return (
+            <div>
+              <p class="stream-card__meta">
+                {formatDate(entry.data.date)} &middot; {entry.data.activity}
+              </p>
+
+              {isImage && entry.data.src && (
+                <img
+                  src={entry.data.src}
+                  alt={entry.data.alt ?? ''}
+                  class="stream-card__image"
+                  loading="lazy"
+                />
+              )}
+
+              {isYoutube && entry.data.youtube && (
+                <div class="stream-card__embed">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${youtubeId(entry.data.youtube!)}`}
+                    title={entry.data.caption ?? 'Video'}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  />
+                </div>
+              )}
+
+              {entry.data.caption && (
+                <span class="stream-card__caption">{entry.data.caption}</span>
+              )}
+
+              <div class="stream-card__body prose" style="font-size: 0.95rem;">
+                <Content />
+              </div>
+
+              <hr class="rule" style="margin-top: var(--space-2xl);" />
+            </div>
+          );
+        })}
+      </div>
+
+      {sorted.length === 0 && (
+        <p class="sans" style="color: var(--ink-muted); font-size: 0.9rem;">Nothing here yet. Check back soon.</p>
+      )}
+
+    </div>
+  </section>
+</Base>

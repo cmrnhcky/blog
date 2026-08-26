@@ -1,0 +1,108 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+const entries = await getCollection('guessing');
+const sorted = entries.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const settled = sorted.filter(e => e.data.result !== 'pending');
+const wins    = settled.filter(e => e.data.result === 'W').length;
+const losses  = settled.filter(e => e.data.result === 'L').length;
+const pushes  = settled.filter(e => e.data.result === 'P').length;
+
+const totalStaked = settled.reduce((acc, e) => acc + (e.data.stake ?? 0), 0);
+const totalReturn = settled.reduce((acc, e) => acc + (e.data.payout ?? 0), 0);
+const netPL       = totalReturn - totalStaked;
+const roiVal      = totalStaked > 0 ? (netPL / totalStaked) * 100 : 0;
+const record      = `${wins}–${losses}${pushes > 0 ? `–${pushes}` : ''}`;
+---
+
+<Base
+  title="Guessing"
+  description="Open record of every bet, prediction, and market call. Wins and losses both. Every tipster shows only winners."
+>
+  <section class="section--lg">
+    <div class="container">
+
+      <h1 style="font-family: var(--font-script); font-size: clamp(1.6rem, 4vw, 2.4rem); margin-bottom: 0.5rem;">
+        Guessing.
+      </h1>
+      <p class="sans" style="font-size: 0.9rem; color: var(--ink-muted); max-width: 520px; line-height: 1.7; margin-bottom: 2.5rem;">
+        Every tipster on earth shows only winners.
+        A man who shows his losses is the only one worth trusting.
+        Sports bets, prediction markets, any speculation. The full record.
+      </p>
+
+      <!-- Stats -->
+      <div class="ledger-stats">
+        <div class="stat">
+          <span class="stat__value">{record}</span>
+          <span class="stat__label">Record</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value">${totalStaked.toFixed(0)}</span>
+          <span class="stat__label">Total Staked</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value" style={`color: ${netPL >= 0 ? '#4A7C59' : 'var(--loss)'}`}>
+            {netPL >= 0 ? '+' : ''}{netPL.toFixed(2)}
+          </span>
+          <span class="stat__label">Net P&L ($)</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value" style={`color: ${roiVal >= 0 ? '#4A7C59' : 'var(--loss)'}`}>
+            {roiVal >= 0 ? '+' : ''}{roiVal.toFixed(1)}%
+          </span>
+          <span class="stat__label">ROI</span>
+        </div>
+      </div>
+
+      <!-- Entries -->
+      {sorted.map(async (entry) => {
+        const { Content } = await render(entry);
+        const isWin     = entry.data.result === 'W';
+        const isLoss    = entry.data.result === 'L';
+        const isPending = entry.data.result === 'pending';
+        return (
+          <div class="ledger-entry">
+            <div class="ledger-entry__meta">
+              <span class={`badge badge--${isWin ? 'win' : isLoss ? 'loss' : isPending ? 'pending' : 'push'}`}>
+                {isWin ? 'Win' : isLoss ? 'Loss' : isPending ? 'Pending' : 'Push'}
+              </span>
+              <span class="sans" style="font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-muted);">
+                {entry.data.category}
+              </span>
+              <span class="sans" style="font-size:0.8rem; font-weight:600;">{entry.data.event}</span>
+              <span class="sans" style="font-size:0.75rem; color:var(--ink-muted);">
+                {entry.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              </span>
+            </div>
+            <div style="display:flex; gap:1.5rem; margin-bottom:0.75rem; flex-wrap:wrap;">
+              {entry.data.stake !== undefined && (
+                <span class="sans" style="font-size:0.8rem; color:var(--ink-muted);">
+                  Stake: <strong style="color:var(--ink);">${entry.data.stake}</strong>
+                </span>
+              )}
+              {entry.data.odds !== undefined && (
+                <span class="sans" style="font-size:0.8rem; color:var(--ink-muted);">
+                  Odds: <strong style="color:var(--ink);">{entry.data.odds > 0 ? '+' : ''}{entry.data.odds}</strong>
+                </span>
+              )}
+              {entry.data.payout !== undefined && (
+                <span class="sans" style="font-size:0.8rem; color:var(--ink-muted);">
+                  Return: <strong style={`color: ${isWin ? '#4A7C59' : isLoss ? 'var(--loss)' : 'var(--ink-muted)'}`}>
+                    ${entry.data.payout.toFixed(2)}
+                  </strong>
+                </span>
+              )}
+            </div>
+            <div class="prose" style="font-size:0.9rem; color:var(--ink-muted);">
+              <Content />
+            </div>
+          </div>
+        );
+      })}
+
+    </div>
+  </section>
+</Base>

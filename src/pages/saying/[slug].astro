@@ -1,0 +1,94 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('saying', ({ data }) => !data.draft);
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const dateFormatted = post.data.date.toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+---
+
+<Base title={post.data.title} description={post.data.excerpt}>
+  <article class="section--lg">
+    <div class="container">
+
+      <!-- Header -->
+      <p class="sans" style="font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--color-accent); margin-bottom:1rem;">
+        <a href="/saying" style="color:var(--color-muted); text-decoration:none;">Saying</a>
+        &nbsp;/&nbsp; {post.data.pillar}
+      </p>
+
+      <h1 style="font-family:var(--font-serif); font-size:clamp(1.8rem, 4vw, 2.8rem); font-weight:600; line-height:1.2; margin-bottom:1rem; letter-spacing:-0.02em;">
+        {post.data.title}
+      </h1>
+
+      <p class="sans" style="font-size:0.78rem; color:var(--color-muted); margin-bottom:2.5rem;">
+        {dateFormatted}
+      </p>
+
+      {post.data.ritual && (
+        <p class="ritual-stamp">{post.data.ritual}</p>
+      )}
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <hr class="rule" />
+
+      <!-- Footer nav -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <a href="/saying" class="sans" style="font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--color-muted); text-decoration:none;">
+          &larr; All saying
+        </a>
+        <p class="sans" style="font-size:0.78rem; color:var(--color-muted);">
+          Filed under: <span style="color:var(--color-accent);">{post.data.pillar}</span>
+        </p>
+      </div>
+
+      <hr class="rule" />
+
+      <!-- Email capture at bottom of every post -->
+      <div class="email-capture" style="margin: 0 calc(-1 * var(--space-lg));">
+        <span class="email-capture__heading">Occasional notes.</span>
+        <span class="email-capture__sub">No schedule. No spam. Just the things worth sharing.</span>
+        <form
+          class="email-capture__form"
+          name="notes-signup"
+          method="POST"
+          action="/thank-you"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+        >
+          <input type="hidden" name="form-name" value="notes-signup" />
+          <label class="sr-only" for="post-email-input">Email address</label>
+          <input
+            id="post-email-input"
+            class="email-capture__input"
+            type="email"
+            name="email"
+            placeholder="your@email.com"
+            required
+          />
+          <button class="email-capture__btn" type="submit">I&rsquo;m in</button>
+          <!-- Honeypot: visible to bots, hidden via CSS -->
+          <label class="sr-only" for="post-bot-field">Leave this empty</label>
+          <input id="post-bot-field" type="text" name="bot-field" class="sr-only" tabindex="-1" autocomplete="off" />
+        </form>
+      </div>
+
+    </div>
+  </article>
+</Base>

@@ -1,0 +1,87 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('saying', ({ data }) => !data.draft);
+const sorted = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const pillars = ['Pours', 'Miles', 'Bets', 'Kids', 'Essentials'];
+---
+
+<Base
+  title="Saying"
+  description="Cameron Hickey's writing on discernment — drinks, running, gambling, fatherhood, and money."
+>
+  <section class="section--lg">
+    <div class="container">
+
+      <h1 style="font-family: var(--font-script); font-size: clamp(1.6rem, 4vw, 2.4rem); margin-bottom: 0.5rem;">
+        Saying.
+      </h1>
+      <p class="sans" style="font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 3rem;">
+        Whenever inspired. The architecture carries coherence so cadence doesn't have to.
+      </p>
+
+      <!-- Pillar filter links -->
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:2.5rem;" id="pillar-filters">
+        <a href="/saying" class="sans pillar-filter" data-pillar="" style="font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.3rem 0.7rem; border:1px solid var(--rule); color:var(--ink-muted); text-decoration:none;">All</a>
+        {pillars.map(p => (
+          <a
+            href={`/saying?pillar=${encodeURIComponent(p)}`}
+            class="sans pillar-filter"
+            data-pillar={p}
+            style="font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.3rem 0.7rem; border:1px solid var(--rule); color:var(--ink-muted); text-decoration:none;"
+          >{p}</a>
+        ))}
+      </div>
+
+      <!-- Post list -->
+      <div id="post-list">
+        {sorted.map(post => (
+          <a
+            href={`/saying/${post.id}`}
+            class="post-card"
+            data-pillar={post.data.pillar}
+            style="margin-bottom:2rem; display:block;"
+          >
+            <p class="post-card__pillar">{post.data.pillar}</p>
+            <h2 class="post-card__title" style="font-size:1.4rem;">{post.data.title}</h2>
+            <p class="post-card__excerpt">{post.data.excerpt}</p>
+            <p class="post-card__date">
+              {post.data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </p>
+          </a>
+        ))}
+      </div>
+
+      {sorted.length === 0 && (
+        <p class="sans" style="color:var(--ink-muted); font-size:0.9rem;">Nothing here yet. Check back soon.</p>
+      )}
+
+    </div>
+  </section>
+</Base>
+
+<script is:inline>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var active = params.get('pillar') || '';
+
+    // Highlight active filter
+    document.querySelectorAll('.pillar-filter').forEach(function (el) {
+      if (el.dataset.pillar === active) {
+        el.style.borderColor = 'var(--gold)';
+        el.style.color = 'var(--gold)';
+      }
+    });
+
+    // Hide posts that don't match
+    if (active) {
+      document.querySelectorAll('#post-list .post-card').forEach(function (el) {
+        if (el.dataset.pillar !== active) {
+          el.style.display = 'none';
+        }
+      });
+    }
+  })();
+</script>
