@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
+import QuoteRail from '../../components/QuoteRail.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('saying', ({ data }) => !data.draft);
@@ -24,44 +25,41 @@ const dateFormatted = post.data.date.toLocaleDateString('en-US', {
   <article class="section--lg">
     <div class="container">
 
-      <!-- Header -->
-      <p class="sans" style="font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--color-accent); margin-bottom:1rem;">
-        <a href="/saying" style="color:var(--color-muted); text-decoration:none;">Saying</a>
-        &nbsp;/&nbsp; {post.data.pillar}
-      </p>
+      <!-- Header — kicker, headline, standfirst, dateline -->
+      <header class="article-head">
+        <p class="kicker">
+          <a href="/saying">Saying</a><span class="kicker__sep">/</span>{post.data.pillar}
+        </p>
 
-      <h1 style="font-family:var(--font-serif); font-size:clamp(1.8rem, 4vw, 2.8rem); font-weight:600; line-height:1.2; margin-bottom:1rem; letter-spacing:-0.02em;">
-        {post.data.title}
-      </h1>
+        <h1 class="article-title">{post.data.title}</h1>
 
-      <p class="sans" style="font-size:0.78rem; color:var(--color-muted); margin-bottom:2.5rem;">
-        {dateFormatted}
-      </p>
+        {post.data.excerpt && <p class="standfirst">{post.data.excerpt}</p>}
+
+        <p class="dateline">
+          By <strong>Cameron Hickey</strong> &middot; {dateFormatted}
+        </p>
+      </header>
 
       {post.data.ritual && (
         <p class="ritual-stamp">{post.data.ritual}</p>
       )}
 
-      <div class="prose">
+      <div class="prose prose--feature">
         <Content />
       </div>
+
+      <QuoteRail count={2} seed={post.id} />
 
       <hr class="rule" />
 
       <!-- Footer nav -->
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-        <a href="/saying" class="sans" style="font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--color-muted); text-decoration:none;">
-          &larr; All saying
-        </a>
-        <p class="sans" style="font-size:0.78rem; color:var(--color-muted);">
-          Filed under: <span style="color:var(--color-accent);">{post.data.pillar}</span>
-        </p>
+      <div class="folio">
+        <a href="/saying" class="folio__link">&larr; All saying</a>
+        <span>Filed under <strong>{post.data.pillar}</strong></span>
       </div>
 
-      <hr class="rule" />
-
       <!-- Email capture at bottom of every post -->
-      <div class="email-capture" style="margin: 0 calc(-1 * var(--space-lg));">
+      <div class="email-capture email-capture--inset">
         <span class="email-capture__heading">Occasional notes.</span>
         <span class="email-capture__sub">No schedule. No spam. Just the things worth sharing.</span>
         <form

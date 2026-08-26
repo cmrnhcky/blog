@@ -21,12 +21,10 @@ const youtubeId = (input: string) => {
   <section class="section--lg">
     <div class="container">
 
-      <h1 style="font-family: var(--font-script); font-size: clamp(1.6rem, 4vw, 2.4rem); margin-bottom: 0.5rem;">
-        Living.
-      </h1>
-      <p class="sans" style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic; margin-bottom: 3rem;">
-        Everything, in order.
-      </p>
+      <header class="page-head">
+        <h1 class="page-title">Living.</h1>
+        <p class="page-sub">Everything, in order.</p>
+      </header>
 
       <div class="stream">
         {sorted.map(async (entry) => {
@@ -74,7 +72,7 @@ const youtubeId = (input: string) => {
       </div>
 
       {sorted.length === 0 && (
-        <p class="sans" style="color: var(--ink-muted); font-size: 0.9rem;">Nothing here yet. Check back soon.</p>
+        <p class="meta" style="color: var(--ink-muted); font-size: 0.9rem;">Nothing here yet. Check back soon.</p>
       )}
 
     </div>

@@ -1,0 +1,101 @@
+---
+/*  Marginalia — the workhorse of the quote layer.
+
+    Lines set in the outer margin of the reading column, arriving as you
+    scroll past them. This is the actual magazine move, and it is the
+    honest reading of "littered throughout the site like wallpaper":
+    wallpaper is ambient and *still*. The motion belongs to the reader
+    scrolling, not to the text.
+
+    Below the width where a second column exists, they fold inline —
+    they never disappear, because a quote you can't see isn't wallpaper,
+    it's a deleted file.
+*/
+import { pool } from '../lib/quotes';
+
+interface Props {
+  /** How many marginal notes to hang along this stretch of page. */
+  count?: number;
+  /** Which side. Alternates by default. */
+  side?: 'left' | 'right' | 'alternate';
+  seed?: string;
+}
+
+const { count = 3, side = 'alternate', seed } = Astro.props;
+const lines = pool('rail', seed ?? Astro.url.pathname, count);
+---
+
+{lines.length > 0 && (
+  <div class="quote-rail" data-side={side}>
+    {lines.map((q, i) => (
+      <figure
+        class:list={['rail-note', 'fade-up', side === 'alternate' ? (i % 2 ? 'is-right' : 'is-left') : `is-${side}`]}
+        style={`--n:${i}`}
+      >
+        <blockquote class="rail-note__text">{q.kind === 'phrase' ? q.text : `“${q.text}”`}</blockquote>
+        {q.author && (
+          <figcaption class="rail-note__attr">
+            {q.author}{q.source && <span class="rail-note__source">, {q.source}</span>}
+          </figcaption>
+        )}
+      </figure>
+    ))}
+  </div>
+)}
+
+<style>
+  .quote-rail {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xl);
+    margin: var(--space-3xl) 0;
+  }
+
+  .rail-note {
+    max-width: 20rem;
+    margin: 0;
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--gold-ink);
+  }
+
+  .rail-note__text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+    line-height: 1.28;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .rail-note__attr {
+    font-family: var(--font-label);
+    font-size: var(--step--2);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-ink);
+    margin-top: var(--space-sm);
+  }
+
+  .rail-note__source {
+    text-transform: none;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  /* Wide: pull the notes out into the real margin with negative margins —
+     not absolute positioning, which would collapse them onto each other,
+     and not transforms, which would fight .fade-up. At 1180px the reading
+     column leaves ~20rem of margin; a 14rem note pulled 17rem clears it. */
+  @media (min-width: 1180px) {
+    .quote-rail { gap: var(--space-4xl); }
+    .rail-note { width: 14rem; max-width: 14rem; }
+    .rail-note.is-left  { margin-left: -17rem; }
+    .rail-note.is-right { margin-left: auto; margin-right: -17rem; text-align: right; }
+    .rail-note__text { font-size: var(--step-0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rail-note { transition: none; opacity: 1; transform: none; }
+  }
+</style>

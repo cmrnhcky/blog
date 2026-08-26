@@ -1,0 +1,87 @@
+---
+/*  The interstitial — a full-bleed band of one quote, between sections.
+    This is punctuation, not wallpaper: it stops the page. Use it once,
+    maybe twice, per page. Prominent slot, so it only ever draws from
+    verified attributions (see src/lib/quotes.ts).
+*/
+import { one } from '../lib/quotes';
+
+interface Props {
+  tone?: 'paper' | 'dark';
+  seed?: string;
+}
+const { tone = 'paper', seed } = Astro.props;
+const q = one('interstitial', seed ?? Astro.url.pathname);
+---
+
+{q && (
+  <aside class:list={['quote-band', tone === 'dark' && 'quote-band--dark']}>
+    <div class="quote-band__inner">
+      <blockquote class="quote-band__text">
+        {q.kind === 'phrase' ? q.text : `“${q.text}”`}
+      </blockquote>
+      {q.author && (
+        <p class="quote-band__attr">
+          {q.author}
+          {q.source && <span class="quote-band__source"> · {q.source}</span>}
+          {q.year && <span class="quote-band__source"> · {q.year}</span>}
+        </p>
+      )}
+    </div>
+  </aside>
+)}
+
+<style>
+  .quote-band {
+    background: var(--paper-mid);
+    background-image: var(--grain-light);
+    padding: var(--space-4xl) var(--space-lg);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .quote-band--dark {
+    background-color: var(--ink-deep);
+    background-image: var(--grain-dark);
+    border-color: var(--rule-dark);
+  }
+
+  .quote-band__inner {
+    max-width: var(--measure-wide);
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .quote-band__text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--step-4);
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin: 0 auto;
+    max-width: 24ch;   /* short measure — a quote should break like a headline */
+    text-wrap: balance;
+  }
+  .quote-band--dark .quote-band__text { color: var(--sea); }
+
+  .quote-band__attr {
+    font-family: var(--font-label);
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-ink);
+    margin: var(--space-lg) 0 0;
+  }
+  .quote-band--dark .quote-band__attr { color: var(--gold-lit); }
+
+  .quote-band__source {
+    text-transform: none;
+    letter-spacing: 0.05em;
+    font-style: italic;
+    color: var(--ink-muted);
+  }
+  .quote-band--dark .quote-band__source { color: var(--sea-dim); }
+</style>

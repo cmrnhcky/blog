@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import QuoteInterstitial from '../components/QuoteInterstitial.astro';
+import QuoteRail from '../components/QuoteRail.astro';
 
 const allPosts = await getCollection('saying', ({ data }) => !data.draft);
 const latestPosts = allPosts
@@ -16,7 +18,7 @@ const pillars = [
 ];
 ---
 
-<Base title="Cameron Hickey">
+<Base title="Cameron Hickey" overHero={true}>
 
   <!-- ═══ HERO — rotating photo crossfade ═════════════════════ -->
   <!--
@@ -43,15 +45,15 @@ const pillars = [
     <div class="hero-content">
       <div class="hero-manifesto">
         <p class="label hero-attribution">Oscar Wilde &middot; 1892</p>
-        <blockquote class="serif-quote hero-quote">
+        <blockquote class="quote-lg hero-quote">
           &ldquo;A cynic is a man who knows the price of everything and the value of nothing.&rdquo;
         </blockquote>
         <hr class="hero-rule" aria-hidden="true" />
-        <p class="script-md hero-counter">Price is nothing. Value is everything.</p>
+        <p class="display-md hero-counter">Price is nothing. Value is everything.</p>
       </div>
 
       <div class="hero-identity">
-        <h1 class="script-lg hero-name">Cameron Hickey</h1>
+        <h1 class="display-xl hero-name">Cameron Hickey</h1>
         <p class="label hero-bio">Father, founder and drinker amongst other nouns.</p>
         <nav class="hero-socials" aria-label="Social links">
           <a href="https://www.linkedin.com/in/cmrnhcky/" target="_blank" rel="noopener" aria-label="LinkedIn">
@@ -90,16 +92,12 @@ const pillars = [
             </a>
           ))}
         </div>
-        <p style="margin-top: 2rem;">
-          <a href="/saying" style="font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); text-decoration: none;">
-            All saying &rarr;
-          </a>
-        </p>
+        <p class="more-wrap"><a href="/saying" class="more-link">All saying &rarr;</a></p>
       </div>
     </section>
   )}
 
-  <hr class="rule" />
+  <div class="dinkus" role="separator" aria-hidden="true"><span></span></div>
 
   <!-- ═══ PILLARS — warm ═══════════════════════════════════════ -->
   <section class="section" id="pillars">
@@ -110,7 +108,7 @@ const pillars = [
           <a
             href={p.href}
             class="pillar-card fade-up"
-            style={`transition-delay: ${i * 0.07}s`}
+            style={`--n:${i}`}
           >
             <span class="pillar-card__name">{p.name}</span>
             <p class="pillar-card__desc">{p.desc}</p>
@@ -120,62 +118,34 @@ const pillars = [
     </div>
   </section>
 
-  <!-- ═══ QUOTE WALL — paper-mid inset ═════════════════════════ -->
-  <section class="quote-wall" id="quotes">
-    <div class="quote-wall__inner">
-      <span class="section-label">Lines Worth Keeping.</span>
+  <!-- ═══ QUOTE LAYER — driven by src/data/quotes.json ═════════ -->
+  <QuoteInterstitial />
 
-      <div class="quote-wall__item">
-        <span class="quote-wall__text quote-wall__text--lg">
-          To live is the rarest thing in the world.<br />Most people exist, that is all.
-        </span>
-        <span class="quote-wall__attr">&mdash; Oscar Wilde</span>
-      </div>
-
-      <div class="quote-wall__item">
-        <span class="quote-wall__text quote-wall__text--md">
-          We are all in the gutter, but some of us are looking at the stars.
-        </span>
-        <span class="quote-wall__attr">&mdash; Oscar Wilde</span>
-      </div>
-
-      <div class="quote-wall__item">
-        <span class="quote-wall__text quote-wall__text--sm">
-          Be yourself; everyone else is already taken.
-        </span>
-        <span class="quote-wall__attr">&mdash; Oscar Wilde</span>
-      </div>
-
+  <section class="section">
+    <div class="container">
+      <QuoteRail count={3} />
     </div>
   </section>
 
-  <hr class="rule" />
+  <div class="dinkus" role="separator" aria-hidden="true"><span></span></div>
 
-  <!-- ═══ PERSONAL TOUCHES — warm ══════════════════════════════ -->
+  <!-- ═══ SECTION DOORS ══════════════════════════════════════ -->
   <section class="section">
-    <div class="container--wide" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-lg);">
-
-      <a href="/living" style="text-decoration:none; color:inherit; border-top: 2px solid var(--atlantic); padding-top: var(--space-md); display:block;">
-        <span class="section-label" style="color: var(--atlantic);">Living</span>
-        <p style="font-family: var(--font-sans); font-size: 0.88rem; color: var(--ink-muted); line-height: 1.6;">
-          The feed. Running, drinking, parenting. Everything in order.
-        </p>
-      </a>
-
-      <a href="/guessing" style="text-decoration:none; color:inherit; border-top: 2px solid var(--gold); padding-top: var(--space-md); display:block;">
-        <span class="section-label" style="color: var(--gold);">Guessing</span>
-        <p style="font-family: var(--font-sans); font-size: 0.88rem; color: var(--ink-muted); line-height: 1.6;">
-          Open record. Every bet, every prediction. Wins and losses both.
-        </p>
-      </a>
-
-      <a href="/cameron" style="text-decoration:none; color:inherit; border-top: 2px solid var(--ink-muted); padding-top: var(--space-md); display:block;">
-        <span class="section-label">Cameron</span>
-        <p style="font-family: var(--font-sans); font-size: 0.88rem; color: var(--ink-muted); line-height: 1.6;">
-          First generation father. Enterprise background. Why he builds.
-        </p>
-      </a>
-
+    <div class="container--wide">
+      <div class="doors">
+        <a href="/living" class="door">
+          <span class="door__name">Living</span>
+          <p class="door__desc">The feed. Running, drinking, parenting. Everything in order.</p>
+        </a>
+        <a href="/guessing" class="door">
+          <span class="door__name">Guessing</span>
+          <p class="door__desc">Open record. Every bet, every prediction. Wins and losses both.</p>
+        </a>
+        <a href="/cameron" class="door">
+          <span class="door__name">Cameron</span>
+          <p class="door__desc">First generation father. Enterprise background. Why he builds.</p>
+        </a>
+      </div>
     </div>
   </section>
 

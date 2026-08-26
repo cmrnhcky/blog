@@ -1,0 +1,169 @@
+---
+/*  The drift layer — quotes "coming and going as thoughts do".
+
+    Deliberately NOT a marquee. A ticker is a stock-price device: it is
+    continuous, mechanical, and it signals urgency and data — the opposite
+    of the register this site is after. It also never stops, and thoughts
+    do. The silence between lines is the whole effect, so it is tuned
+    longer than the line itself.
+
+    (hickeyave.com already tried the horizontal ticker variant and dropped
+    it — "too much motion", index.html:2791. Same conclusion, arrived at
+    from the other direction.)
+*/
+import { pool } from '../lib/quotes';
+
+const seed = Astro.url.pathname;
+const lines = pool('drift', seed, 14);
+---
+
+{lines.length > 0 && (
+  <aside class="drift" id="drift" aria-hidden="true" data-lines={JSON.stringify(
+    lines.map(q => ({ t: q.text, a: q.author ?? null }))
+  )}>
+    <p class="drift__text" id="drift-text"></p>
+    <span class="drift__attr" id="drift-attr"></span>
+  </aside>
+)}
+
+<style>
+  .drift {
+    position: fixed;
+    left: var(--space-lg);
+    bottom: var(--space-lg);
+    z-index: 40;
+    max-width: 22rem;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity var(--dur-drift) var(--ease), transform var(--dur-drift) var(--ease);
+  }
+  .drift.is-lit { opacity: 1; transform: translateY(0); }
+
+  .drift__text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step--1);
+    line-height: 1.35;
+    color: var(--ink-muted);
+    margin: 0;
+  }
+
+  .drift__attr {
+    font-family: var(--font-label);
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-ink);
+    display: block;
+    margin-top: 0.35rem;
+  }
+
+  /* Over the dark hero and the dark footer the layer flips, rather than
+     vanishing — the wallpaper should be continuous. */
+  .drift.on-dark .drift__text { color: var(--sea-faint); }
+  .drift.on-dark .drift__attr { color: var(--gold-lit); opacity: 0.55; }
+
+  /* ── Mobile: the primary viewport ────────────────────────────────
+     There is no margin to hang a note in, so the layer drops to a single
+     centred line pinned above the safe area — one short phrase, no
+     attribution, nothing to tap. It stays out of the thumb zone, never
+     takes pointer events, and steps aside when the menu is open. */
+  @media (max-width: 1180px) {
+    .drift {
+      left: var(--space-md);
+      right: var(--space-md);
+      bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-md));
+      max-width: none;
+      text-align: center;
+    }
+    .drift__text {
+      font-size: var(--step--2);
+      line-height: 1.4;
+      /* One line only — a phrase that wraps on a phone is not ambient. */
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .drift__attr { display: none !important; }
+  }
+
+  :global(body.nav-open) .drift { opacity: 0 !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .drift { transition: none; }
+  }
+</style>
+
+<script is:inline>
+(function () {
+  var el = document.getElementById('drift');
+  if (!el) return;
+  var textEl = document.getElementById('drift-text');
+  var attrEl = document.getElementById('drift-attr');
+
+  var lines;
+  try { lines = JSON.parse(el.dataset.lines || '[]'); } catch (e) { return; }
+  if (!lines.length) return;
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Shuffle per visit — the server pool is stable, the order is not. */
+  for (var i = lines.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = lines[i]; lines[i] = lines[j]; lines[j] = t;
+  }
+
+  var idx = 0;
+  function paint() {
+    var q = lines[idx % lines.length];
+    textEl.textContent = '“' + q.t + '”';
+    attrEl.textContent = q.a || '';
+    attrEl.style.display = q.a ? 'block' : 'none';
+    idx++;
+  }
+
+  /* Only present once the reader is past the hero, and gone again before
+     the footer — the layer is marginalia, not furniture. */
+  var allowed = false;
+  function inRange() {
+    var y = window.scrollY;
+    var doc = document.documentElement.scrollHeight - window.innerHeight;
+    return y > window.innerHeight * 0.9 && y < doc - 320;
+  }
+  function onScroll() {
+    allowed = inRange();
+    if (!allowed) el.classList.remove('is-lit');
+    /* Invert over dark sections so the wallpaper stays continuous. */
+    var probe = document.elementFromPoint(24, window.innerHeight - 64);
+    var dark = probe && probe.closest && probe.closest('.hero, .email-capture, .site-footer, .quote-band--dark');
+    el.classList.toggle('on-dark', !!dark);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if (reduced) {
+    /* One line, held. No cycling, no fade. */
+    paint();
+    var show = function () { el.classList.toggle('is-lit', allowed); };
+    window.addEventListener('scroll', show, { passive: true });
+    show();
+    return;
+  }
+
+  var HOLD = 7000;    /* how long a thought stays */
+  var SILENCE = 4200; /* how long before the next one — the important number */
+
+  function cycle() {
+    if (!allowed) { setTimeout(cycle, 1200); return; }
+    paint();
+    el.classList.add('is-lit');
+    setTimeout(function () {
+      el.classList.remove('is-lit');
+      setTimeout(cycle, SILENCE);
+    }, HOLD);
+  }
+  setTimeout(cycle, 2400);
+})();
+</script>
