@@ -1385,3 +1385,37 @@ input:focus-visible {
 /* ─── Cameron: the facts row ─────────────────────────────────── */
 .fact-row { display: flex; gap: var(--space-2xl); flex-wrap: wrap; }
 .fact__value { font-family: var(--font-body); font-size: var(--step-0); }
+
+
+/* ─── Tap targets, second pass ───────────────────────────────────
+   Measured at 375x812. Everything interactive clears 44px; the nav
+   overlay links, the burger, the cover socials and the two footer
+   links were all landing at 40–43px. */
+.nav-overlay a,
+.nav-group a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 var(--space-md);
+}
+.nav-burger { min-height: 46px; min-width: 46px; align-items: center; justify-content: center; }
+.cover__socials a { padding: 13px; margin: -13px; }
+.site-footer__logo { min-height: 44px; display: inline-flex; align-items: center; }
+.site-footer__ha a { display: inline-block; min-height: 44px; padding: 12px 4px; }
+
+
+/* ─── Nav open: lift the whole bar above the overlay ─────────────
+   .site-nav is position:fixed with z-index:100, which makes it a
+   stacking context — so .nav-burger's z-index:110 was scoped inside
+   it and sat *below* the overlay's 105. The burger was unclickable
+   while the menu was open, and since the burger is now the only nav
+   at every width, that left no way to close it on a phone. */
+body.nav-open .site-nav {
+  z-index: 110;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom-color: transparent;
+}
+body.nav-open .site-nav__logo { color: var(--sea) !important; }
