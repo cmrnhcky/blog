@@ -20,12 +20,17 @@ interface Props {
 const {
   title,
   description = 'The personal site of Cameron Hickey — founder of Hickey Avenue. Notes on value over price: running, whiskey, fatherhood, and the math of a good bet.',
-  ogImage = '/og-default.svg',
+  ogImage,
   overHero = false,
 } = Astro.props;
 
+/* A post's lead image doubles as its social preview; everything else
+   falls back to the site card. og:image must be raster — every platform
+   rejects SVG, which is why the old /og-default.svg never rendered. */
+const ogPath = ogImage ?? '/og-default.png';
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImageURL = new URL(ogImage, Astro.site);
+const ogImageURL = new URL(ogPath, Astro.site);
 
 const path = Astro.url.pathname;
 const isActive = (href: string) =>
@@ -48,6 +53,8 @@ const isActive = (href: string) =>
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />

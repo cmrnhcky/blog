@@ -18,6 +18,11 @@ const saying = defineCollection({
     featured: z.boolean().default(false),
     tags:     z.array(z.string()).default([]),
     ritual:   z.string().optional(),
+    /* Optional lead image. Path is relative to public/ — see PUBLISHING.md.
+       Doubles as the article's social preview when set. */
+    image:        z.string().optional(),
+    imageAlt:     z.string().optional(),
+    imageCaption: z.string().optional(),
   }),
 });
 
@@ -27,11 +32,13 @@ const living = defineCollection({
   schema: z.object({
     date:     z.coerce.date(),
     activity: z.enum(['running', 'drinking', 'parenting', 'betting', 'watching', 'listening', 'reading', 'working', 'other']),
-    type:     z.enum(['image', 'youtube', 'note']),
+    type:     z.enum(['image', 'youtube', 'spotify', 'note']),
     src:      z.string().optional(),
     alt:      z.string().optional(),
     caption:  z.string().optional(),
     youtube:  z.string().optional(),
+    /* Paste any Spotify share URL — playlist, album or track. */
+    spotify:  z.string().optional(),
   }),
 });
 

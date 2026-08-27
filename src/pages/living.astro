@@ -8,6 +8,13 @@ const sorted = entries.sort((a, b) => b.data.date.valueOf() - a.data.date.valueO
 
 
 
+/* Accepts a pasted Spotify share URL (playlist / album / track) and returns
+   the embed path. Falls through unchanged if an embed path is given. */
+const spotifyEmbed = (input: string) => {
+  const m = input.match(/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(playlist|album|track|episode|show)\/([A-Za-z0-9]+)/);
+  return m ? `${m[1]}/${m[2]}` : input;
+};
+
 const youtubeId = (input: string) => {
   const match = input.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
   return match ? match[1] : input;
@@ -31,6 +38,7 @@ const youtubeId = (input: string) => {
           const { Content } = await render(entry);
           const isImage   = entry.data.type === 'image';
           const isYoutube = entry.data.type === 'youtube';
+          const isSpotify = entry.data.type === 'spotify';
           return (
             <div>
               <p class="stream-card__meta">
@@ -53,6 +61,17 @@ const youtubeId = (input: string) => {
                     title={entry.data.caption ?? 'Video'}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen
+                  />
+                </div>
+              )}
+
+              {isSpotify && entry.data.spotify && (
+                <div class="stream-card__spotify">
+                  <iframe
+                    src={`https://open.spotify.com/embed/${spotifyEmbed(entry.data.spotify!)}`}
+                    title={entry.data.caption ?? 'Playlist'}
+                    loading="lazy"
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                   />
                 </div>
               )}

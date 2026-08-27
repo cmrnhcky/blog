@@ -27,7 +27,7 @@ const issue = await issueFor(post.data.date);
 const dateFormatted = formatDate(post.data.date);
 ---
 
-<Base title={post.data.title} description={post.data.excerpt}>
+<Base title={post.data.title} description={post.data.excerpt} ogImage={post.data.image}>
   <article class="section--lg">
     <div class="container">
 
@@ -48,6 +48,13 @@ const dateFormatted = formatDate(post.data.date);
 
         <p class="dateline">By <strong>Cameron Hickey</strong> &middot; {dateFormatted}</p>
       </header>
+
+      {post.data.image && (
+        <figure class="article-figure">
+          <img src={post.data.image} alt={post.data.imageAlt ?? ''} loading="eager" />
+          {post.data.imageCaption && <figcaption>{post.data.imageCaption}</figcaption>}
+        </figure>
+      )}
 
       {post.data.ritual && <p class="ritual-stamp">{post.data.ritual}</p>}
 
