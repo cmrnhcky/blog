@@ -4,7 +4,8 @@
 > sophistication, entertainment over information, adjacent to Hickey Avenue but not identical.*
 > Supersedes `cameronhickey-site-reference.md` (and its two byte-identical copies `_1`, `_2`)
 > and `CLAUDE_CODE_BRIEF.md`, both of which describe a site that no longer exists.
-> **2026-08-26. Part V updated after the first build pass — items 1, 2, 5, 6, 8 are shipped.**
+> **2026-08-26, updated 2026-08-27 after pass 2. Parts I–III are the original analysis;
+> Part V is the build log. Part IV's three questions are all answered and folded in.**
 
 ---
 
@@ -446,27 +447,72 @@ Malformed rows fail `npm run build` with the row index, by design. See `src/data
 > conversation. It ships `verified: false`, which bars it from the masthead and interstitials but
 > keeps it in the margin. Your call: source it, run it unattributed as a phrase, or retire it.
 
+### Shipped — 2026-08-27, pass 2 (branch `redesign-esquire`)
+
+**The taxonomy correction.** Part III recommended forms-only — departments, no subjects. That was
+wrong, and Cameron caught it: Esquire is navigated by *topic* (Style, Grooming, Fitness & Health,
+Food & Drink). Part III described the print magazine's departments and mistook them for the whole
+model. Esquire runs both at different layers — **topics are how you browse, forms are the
+franchises inside them.** "Wear this not that" is a form applied to the style topic.
+
+Two things also make the topic axis stronger here than Part III assessed: Cameron's topics are
+*broad* (money, style, sundries) where the old pillars were narrow (Pours, Miles, Bets), and broad
+topics don't go stale for a whenever-inspired publisher. And the two forms he rejected — Overheard,
+Changed My Mind — are exactly the two that wait for material rather than being generative.
+
+| Axis | Values |
+|---|---|
+| **Topic** (required — the nav) | Drink · Fitness · Money · Style · Fatherhood · Sundries |
+| **Form** (optional — the franchise) | Endorsements · Greater Than · Lists |
+
+Form is optional, so a post without one is its own escape hatch — no catch-all department, one
+decision per post. Names live only in `src/lib/taxonomy.ts`; frontmatter and URLs store slugs, so a
+rename is one line with zero content churn. They have already changed three times.
+
+| Done | What changed |
+|---|---|
+| **Routing** | `/saying` retired as a layer. Articles at `/[topic]/[slug]`. One `[section]` template serves all nine topic/form pages — `getStaticPaths` returns exactly nine slugs, so it is not a catch-all and cannot swallow `/living`, `/cameron` or `/archive`. |
+| **`/archive`** | Replaces the old `/saying` index, grouped by issue. Also replaces the old `?pillar=` filter, which hid posts client-side by mutating inline styles — invisible to search and unlinkable. |
+| **Issues** | Derived from content dates in `src/lib/issues.ts`, never a hand-maintained file. An issue is *finished*, not stalled — this is what makes sporadic publishing read as a body of work. |
+| **The cover** | Typographic, full-bleed, no photograph. The five-photo Ken Burns crossfade is gone with `public/hero/`. |
+| **Nav** | Burger-primary at every width; the full-screen overlay is the only nav, in three groups — topics, rooms, forms. Six topics never fit a top bar at 375px. |
+| **Guessing** | Removed; content deleted. Took the `--win`/`--loss` tokens, `.badge--*`, `.ledger-*` and 22 inline styles with it. |
+| **Inline styles** | **66 → 0.** Extracted `.message-page` (404 and thank-you were the same layout twice), `EmailCapture` (duplicated verbatim in two files), `.filter-chip`, `.issue-group`, `.fact-row`, `.empty-note`. |
+
+**Three bugs found and fixed, all pre-existing:**
+
+1. **Every date on the site rendered a day early.** Frontmatter carries plain dates, which
+   `z.coerce.date()` parses as UTC midnight; formatting in local time shifts them backwards west of
+   Greenwich. In Florida the whiskey post dated `2026-06-01` displayed as *May 31, 2026* and grouped
+   into a phantom May issue — which is why the cover first showed No. 3 with two months of content.
+   All formatting now goes through `src/lib/dates.ts`; issue grouping uses `getUTC*`.
+2. **The nav overlay could not be closed on a phone.** `.site-nav` is `position: fixed` with
+   `z-index: 100`, making it a stacking context — so `.nav-burger`'s `z-index: 110` was scoped
+   inside it and rendered *below* the overlay's 105. Latent before; critical once the burger became
+   the only nav.
+3. **Standalone link targets.** The footer social links were 17px tall on desktop (the "X" link was
+   8px wide). Mobile padding had been scoped to `max-width: 640px` only.
+
+### Verified — pass 2
+
+`npm run build` clean · 16 pages · all nine `[section]` pages generate · `/living`, `/cameron`,
+`/archive`, `/404`, `/thank-you` unaffected · every internal link resolves (14 checked, zero
+broken) · zero inline styles in `src/` · zero dead token references · zero horizontal overflow at
+375px · no text under 12px · every tap target ≥44px on mobile and ≥24px on desktop · nav overlay
+fits 521px in an 812px viewport without scrolling · marginalia rail hangs clear at 1265px ·
+console clean.
+
 ### Still open
 
 | # | Action | Blocked on |
 |---|---|---|
-| 1 | **Answer Q1–Q3** (Part IV): masthead name · photography · formats-vs-pillars | You |
-| 2 | Formats migration — `department` enum + post-hoc `tags` | Q3 |
-| 3 | Hero: kill the five-photo Ken Burns crossfade | Q2 |
-| 4 | Remove Guessing (`TASKS.md:65`) — takes 22 inline styles and the dead `--win`/`--loss` layer with it | Decided, not done |
-| 5 | Build the colophon — the one page that does the agency's work | — |
-| 6 | Load the quote database | You — the structure is waiting |
-| 7 | Remaining 36 inline styles on `living` / `saying` / `cameron` / `404` / `thank-you` | — |
-| 8 | Delete `cameronhickey-site-reference{,_1,_2}.md` + `CLAUDE_CODE_BRIEF.md` | — |
-| 9 | Issue numbering + archive (Part III.2) | Q3 |
-| 10 | Merge `redesign-esquire` → `main` when you're happy with it | You |
-
-### Verified this pass
-
-`npm run build` clean · zero console errors · zero dead token references in `src/` · zero
-horizontal overflow at 375px on every page · zero text under 12px · all tap targets ≥44px ·
-Rock Salt and Syne absent from every built page · Bodoni Moda, Spectral and Archivo Narrow all
-loading.
+| 1 | **Load the quote database** — the layer stays near-invisible at 3 quotes; it wants ~40 | You |
+| 2 | Decide the motto: source *"Be yourself…"*, run it unattributed, or retire it | You |
+| 3 | The recurring ritual — open since June. The cheapest sophistication multiplier left | You |
+| 4 | Colophon page — the one page that does the agency's work | — |
+| 5 | Surface `census()` on the colophon so the quote wall audits its own author concentration | After 1 |
+| 6 | Delete `cameronhickey-site-reference{,_1,_2}.md` + `CLAUDE_CODE_BRIEF.md` | — |
+| 7 | Merge `redesign-esquire` → `main` | You |
 
 ---
 
@@ -477,9 +523,14 @@ loading.
   `The Pour / The Mile / The Bet` taxonomy. Delete all three.
 - `CLAUDE_CODE_BRIEF.md` (16KB) specs a single-page Phase 1 that was passed months ago.
 - `README.md` is still the unmodified Astro minimal-starter template.
-- **Automation candidate** *(working rule 7)*: once posts carry `department` + `date`, the issue
-  archive, the department index pages, and the RSS categories all generate from frontmatter with no
-  hand-maintained lists. Build the issue grouping as a derived value, never as a data file.
-- **Automation candidate**: `census()` in `src/lib/quotes.ts` already computes author concentration
-  and unverified count. Surface it on the colophon so the quote wall audits itself — if one author
-  passes a third of the file, that is the Wilde problem returning.
+- **Automation candidate** *(working rule 7)*: `census()` in `src/lib/quotes.ts` already computes
+  author concentration and unverified count. Surfaced on the colophon, the quote wall audits itself
+  — if one author passes a third of the file, that is the Wilde problem returning.
+- **Automation candidate**: issues, department indexes and RSS categories all now derive from
+  frontmatter. Nothing about the archive is hand-maintained, and nothing new should be.
+
+## The standing risk
+
+The site is a well-built empty magazine: **one article, six Living entries, three quotes.** Pass 1
+and pass 2 built the rooms; neither filled them. Esquire's authority is volume plus consistency, and
+sophistication makes emptiness louder, not quieter. The next move is content, not CSS.
