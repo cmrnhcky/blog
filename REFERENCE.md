@@ -18,7 +18,7 @@ This file is infrastructure and how-to-change-things.
 | **Content** | Markdown files + one JSON file. No database, no CMS |
 | **JavaScript shipped** | Nav toggle, scroll fades, quote drift. A few KB, all inline |
 | **Host** | Netlify, auto-deploying from GitHub |
-| **Output** | 16 static HTML pages |
+| **Output** | 18 static HTML pages |
 
 **The consequence worth understanding:** every page is a flat file baked at build time. There's no
 server, so nothing can be "down" except the CDN, and there's no admin login to lose. The tradeoff is
@@ -199,8 +199,9 @@ Changing the **key** means editing every post that uses it and breaking those UR
 ### Add a topic or form
 
 1. Add an entry to `TOPICS` or `FORMS` in `src/lib/taxonomy.ts`
-2. **Check the slug doesn't collide with an existing page** — `living`, `cameron`, `archive`,
-   `thank-you`, `404`, `rss.xml`. A topic called `living` would fight `/living`.
+2. **Check the slug doesn't collide with an existing page** — `living`, `listening`, `now`,
+   `cameron`, `archive`, `thank-you`, `404`, `rss.xml`. A topic called `living` would fight
+   `/living`.
 3. `npm run build` — the new page generates automatically
 
 Nothing else. The nav, the homepage grid, and the archive chips all read from that file.
