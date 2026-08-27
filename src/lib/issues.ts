@@ -28,7 +28,9 @@ const MONTHS = [
   'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER',
 ];
 
-const keyOf = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+/* UTC, for the reason documented in src/lib/dates.ts — local-time
+   grouping put a June 1 post into a phantom May issue. */
+const keyOf = (d: Date) => `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
 
 /** The month an entry belongs to. Exported so callers group the same way. */
 export const issueKeyFor = (date: Date): string => keyOf(date);

@@ -8,6 +8,7 @@
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { allIssues, issueKeyFor } from '../lib/issues';
+import { formatDate } from '../lib/dates';
 import { allSections, topicName, formName } from '../lib/taxonomy';
 
 const posts = (await getCollection('saying', ({ data }) => !data.draft))
@@ -56,7 +57,7 @@ const byIssue = issues
                   <h3 class="post-card__title">{post.data.title}</h3>
                   <p class="post-card__excerpt">{post.data.excerpt}</p>
                   <p class="post-card__date">
-                    {post.data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    {formatDate(post.data.date)}
                   </p>
                 </a>
               ))}

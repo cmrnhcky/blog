@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { allSections, topicName, formName } from '../lib/taxonomy';
 import { currentIssue } from '../lib/issues';
+import { formatDate } from '../lib/dates';
 import QuoteInterstitial from '../components/QuoteInterstitial.astro';
 import QuoteRail from '../components/QuoteRail.astro';
 import EmailCapture from '../components/EmailCapture.astro';
@@ -78,7 +79,7 @@ const issue = await currentIssue();
               <h2 class="post-card__title">{post.data.title}</h2>
               <p class="post-card__excerpt">{post.data.excerpt}</p>
               <span class="post-card__date">
-                {post.data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                {formatDate(post.data.date)}
               </span>
             </a>
           ))}

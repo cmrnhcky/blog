@@ -8,6 +8,7 @@ import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
 import { topicName, formName } from '../../lib/taxonomy';
 import { issueFor } from '../../lib/issues';
+import { formatDate } from '../../lib/dates';
 import QuoteRail from '../../components/QuoteRail.astro';
 import EmailCapture from '../../components/EmailCapture.astro';
 
@@ -23,9 +24,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 const issue = await issueFor(post.data.date);
 
-const dateFormatted = post.data.date.toLocaleDateString('en-US', {
-  month: 'long', day: 'numeric', year: 'numeric',
-});
+const dateFormatted = formatDate(post.data.date);
 ---
 
 <Base title={post.data.title} description={post.data.excerpt}>

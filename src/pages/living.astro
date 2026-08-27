@@ -1,12 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
+import { formatDate } from '../lib/dates';
 
 const entries = await getCollection('living');
 const sorted = entries.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const formatDate = (date: Date) =>
-  date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
 
 const youtubeId = (input: string) => {
   const match = input.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
@@ -61,18 +61,18 @@ const youtubeId = (input: string) => {
                 <span class="stream-card__caption">{entry.data.caption}</span>
               )}
 
-              <div class="stream-card__body prose" style="font-size: 0.95rem;">
+              <div class="stream-card__body prose">
                 <Content />
               </div>
 
-              <hr class="rule" style="margin-top: var(--space-2xl);" />
+              <div class="dinkus" role="separator" aria-hidden="true"><span></span></div>
             </div>
           );
         })}
       </div>
 
       {sorted.length === 0 && (
-        <p class="meta" style="color: var(--ink-muted); font-size: 0.9rem;">Nothing here yet. Check back soon.</p>
+        <p class="empty-note">Nothing here yet. Check back soon.</p>
       )}
 
     </div>

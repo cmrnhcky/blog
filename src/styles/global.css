@@ -397,7 +397,6 @@ body.nav-open { overflow: hidden; }
   text-decoration: none;
 }
 
-/* Rock Salt for pillar names — short, allowed */
 .pillar-card__name {
   font-family: var(--font-display);
   font-size: var(--step-0);
@@ -779,9 +778,8 @@ input:focus-visible {
   display: block;
 }
 
-.stream-card__body {
-  margin-top: var(--space-md);
-}
+.stream-card__body { margin-top: var(--space-md); }
+.stream-card__body.prose { font-size: var(--step--1); }
 
 
 
@@ -977,7 +975,7 @@ input:focus-visible {
 
 /* ─── Page head ──────────────────────────────────────────────────
    The masthead block every section page opens with. Was four
-   near-identical inline styles across living/guessing/saying/cameron. */
+   near-identical inline styles across the section pages. */
 .page-head { margin-bottom: var(--space-3xl); }
 
 .page-title {
@@ -1339,3 +1337,51 @@ input:focus-visible {
   font-style: italic;
   color: var(--ink-muted);
 }
+
+
+/* ─── Message pages ──────────────────────────────────────────────
+   404 and thank-you were byte-for-byte the same layout in two files,
+   differing only in the words. */
+.message-page {
+  text-align: center;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+}
+.message-page__quote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step-3);
+  color: var(--ink);
+  line-height: 1.3;
+  margin-bottom: var(--space-md);
+  text-wrap: balance;
+}
+.message-page__attr {
+  font-family: var(--font-label);
+  font-size: var(--step--2);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+  margin-bottom: var(--space-2xl);
+}
+.message-page__body {
+  font-family: var(--font-body);
+  color: var(--ink-muted);
+  margin-bottom: var(--space-xl);
+}
+.message-page__link {
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold-ink);
+  display: inline-block;
+  padding: 10px 0 2px;
+}
+.message-page__link:hover { color: var(--gold-ink); text-decoration: none; }
+
+/* ─── Cameron: the facts row ─────────────────────────────────── */
+.fact-row { display: flex; gap: var(--space-2xl); flex-wrap: wrap; }
+.fact__value { font-family: var(--font-body); font-size: var(--step-0); }
