@@ -265,23 +265,111 @@ caption: "Morning Pour, episode 4."
 
 Paste any YouTube URL — full, short, or `/shorts/`. The ID is extracted for you.
 
-### A playlist  ← for the music
+### A playlist in the feed
 
 ```markdown
 ---
 date: 2026-08-27
 activity: listening
-type: spotify
-spotify: "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
+type: youtube
+youtube: "https://www.youtube.com/playlist?list=PL4dRW-_ydEe9R4JuobNG-7-jfTkbQQMfm"
 caption: "What August sounded like."
 ---
 ```
 
-In Spotify: **⋯ → Share → Copy link**. Paste it whole. Playlists, albums and single tracks all work.
+For the **Listening room** rather than a one-off feed entry, see §5.
 
 ---
 
-## 4. Images
+## 4A. Music — the Listening room
+
+Two separate things live at `/listening`, and they use different files.
+
+### Pre-made playlists — `src/data/playlists.json`
+
+Your own YouTube / YouTube Music playlists, embedded whole.
+
+```json
+[
+  {
+    "id": "PL4dRW-_ydEe9R4JuobNG-7-jfTkbQQMfm",
+    "title": "On Repeat",
+    "blurb": "What has actually been playing."
+  }
+]
+```
+
+The `id` is the part after `list=` in the URL. Works with playlists made in either YouTube or
+YouTube Music — they share IDs.
+
+> **The playlist must be Public or Unlisted.** Private ones show an error box. YouTube's
+> auto-generated mixes (IDs starting `RD`) and Liked Songs (`LM`) will not embed at all — those
+> aren't real playlists as far as the embed is concerned.
+
+### The song library — `src/data/music.json`
+
+This feeds the generator. **Don't type it by hand** — import it:
+
+```bash
+npm run music:import -- "https://www.youtube.com/playlist?list=PL4dRW-_ydEe9R4JuobNG-7-jfTkbQQMfm"
+```
+
+That reads the playlist, pulls every video ID, and looks up the title and artist for each. No API
+key, no login. Run it on as many playlists as you like — it skips songs already in the library and
+**never touches tagging you've already done**, so re-running after adding tracks is safe.
+
+Then the one manual step: **tag each song with occasions.**
+
+```json
+{
+  "id": "1pnv-7wTQok",
+  "title": "won't stop",
+  "artist": "Gunna",
+  "moods": ["the-drive", "matchday"]
+}
+```
+
+A song can carry as many occasions as fit, or none — untagged songs never reach the generator.
+While running `npm run dev` a red bar shows how many are still untagged. It never appears on the
+live site.
+
+| Slug | Shows as |
+|---|---|
+| `before-five` | Before Five |
+| `the-miles` | The Miles |
+| `the-pour` | The Pour |
+| `matchday` | Matchday |
+| `the-drive` | The Drive |
+| `after-hours` | After Hours |
+
+Rename any of these in `src/lib/music.ts` — the slugs in `music.json` stay as they are.
+
+**The generator needs volume.** Below about ten songs per occasion the same tracks keep coming
+back. Import a few playlists before worrying about perfect tagging.
+
+### How the generator actually works
+
+The visitor picks an occasion, the browser shuffles your tagged songs for it, and hands YouTube an
+anonymous playlist built from those video IDs. Nothing is stored, no account is involved, and each
+visit shuffles fresh. `/listening?m=the-miles` opens straight into that playlist, so the links are
+shareable, and "Open in YouTube" hands the same queue to YouTube proper so someone can save it.
+
+---
+
+## 4B. Now — `/now`
+
+**There is no file for this page.** It shows the most recent Living entry for each activity —
+reading, listening, watching, running, drinking, Oscar, working — using that entry's `caption`.
+
+To change what `/now` says, **post to Living.** That's the whole mechanism, and it's why the page
+can't go stale.
+
+An activity with no entries is simply left off. If something shows an embarrassing "4 months ago",
+that's the page working.
+
+---
+
+## 5. Images
 
 ### Where they go
 
@@ -336,7 +424,7 @@ someone shares that link, this is the picture. Worth adding for anything you exp
 
 ---
 
-## 5. Sharing previews
+## 6. Sharing previews
 
 `public/og-default.png` is the card that shows when the site is shared anywhere without its own
 image. It was previously an SVG, which every platform silently rejects — so shares showed no image
@@ -350,7 +438,7 @@ Test a link after deploying by pasting it into any chat app, or:
 
 ---
 
-## 6. When something goes wrong
+## 7. When something goes wrong
 
 `npm run build` fails and names the file. Common causes:
 
@@ -376,8 +464,11 @@ git push
 
 ---
 
-## 7. What's still worth adding
+## 8. What's still worth adding
 
+- **Import your playlists and tag them.** `npm run music:import`, then fill in `moods`. The
+  generator is the most interactive thing on the site and it does nothing until the library is
+  tagged.
 - **Load ~40 quotes.** The single biggest visible improvement available. Start with lines you
   already know; verify sources as you go.
 - **Decide the ritual stamp** — three measures, same every time.

@@ -106,8 +106,10 @@ const isActive = (href: string) =>
         <hr class="nav-group__rule" />
 
         <ul class="nav-group nav-group--rooms">
-          <li><a href="/living"  class={isActive('/living')  ? 'nav-active' : ''}>Living</a></li>
-          <li><a href="/archive" class={isActive('/archive') ? 'nav-active' : ''}>Archive</a></li>
+          <li><a href="/now"       class={isActive('/now')       ? 'nav-active' : ''}>Now</a></li>
+          <li><a href="/living"    class={isActive('/living')    ? 'nav-active' : ''}>Living</a></li>
+          <li><a href="/listening" class={isActive('/listening') ? 'nav-active' : ''}>Listening</a></li>
+          <li><a href="/archive"   class={isActive('/archive')   ? 'nav-active' : ''}>Archive</a></li>
           <li><a href="/cameron" class={isActive('/cameron') ? 'nav-active' : ''}>Cameron</a></li>
         </ul>
 

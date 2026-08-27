@@ -1,0 +1,89 @@
+---
+/*  Now — what's current, derived.
+
+    The failure mode of every /now page on the internet is that it
+    quietly stops being now. This one can't: each line is the most
+    recent Living entry for that activity, computed at build time. It
+    updates when the feed does, and there is nothing to remember.
+
+    The tradeoff is that it can only say what the feed says — so the
+    way to change /now is to post to Living.
+*/
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { formatDate } from '../lib/dates';
+import { currentIssue } from '../lib/issues';
+
+/* Ordered as it reads on the page, not alphabetically. */
+const SHOWN = [
+  ['reading',   'Reading'],
+  ['listening', 'Listening'],
+  ['watching',  'Watching'],
+  ['running',   'Running'],
+  ['drinking',  'Drinking'],
+  ['parenting', 'Oscar'],
+  ['working',   'Working'],
+] as const;
+
+const entries = (await getCollection('living'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const latest = SHOWN
+  .map(([activity, label]) => {
+    const entry = entries.find(e => e.data.activity === activity);
+    return entry ? { label, entry } : null;
+  })
+  .filter(Boolean) as { label: string; entry: (typeof entries)[number] }[];
+
+const issue = await currentIssue();
+
+const daysAgo = (d: Date) => {
+  const ms = Date.now() - d.valueOf();
+  const days = Math.floor(ms / 86_400_000);
+  if (days <= 0) return 'today';
+  if (days === 1) return 'yesterday';
+  if (days < 31) return `${days} days ago`;
+  const months = Math.round(days / 30);
+  return months === 1 ? 'a month ago' : `${months} months ago`;
+};
+---
+
+<Base title="Now" description="What Cameron Hickey is currently reading, listening to, watching and running.">
+  <section class="section--lg">
+    <div class="container">
+
+      <header class="page-head">
+        <p class="kicker">Now</p>
+        <h1 class="page-title">Currently.</h1>
+        <p class="page-sub">
+          Where things stand at the moment you loaded this. Nothing here is maintained by hand &mdash;
+          it is whatever was posted last.
+        </p>
+      </header>
+
+      {latest.length > 0 ? (
+        <dl class="now-list">
+          {latest.map(({ label, entry }) => (
+            <div class="now-row">
+              <dt class="now-row__label">{label}</dt>
+              <dd class="now-row__value">
+                <span class="now-row__what">{entry.data.caption ?? entry.data.alt ?? '—'}</span>
+                <span class="now-row__when">
+                  {daysAgo(entry.data.date)} &middot; {formatDate(entry.data.date)}
+                </span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <p class="empty-note">Nothing posted yet.</p>
+      )}
+
+      <div class="folio">
+        <a href="/living" class="folio__link">The whole feed &rarr;</a>
+        {issue && <span>No. {issue.no} &middot; {issue.label}</span>}
+      </div>
+
+    </div>
+  </section>
+</Base>

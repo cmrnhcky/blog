@@ -14,7 +14,6 @@ export default defineConfig({
     '/writing':               '/archive',
     '/ledger':                '/archive',
     '/guessing':              '/archive',
-    '/now':                   '/living',
     '/oscar':                 '/living',
     '/about':                 '/cameron',
   },

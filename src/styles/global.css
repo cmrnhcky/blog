@@ -1456,8 +1456,8 @@ body.nav-open .site-nav__logo { color: var(--sea) !important; }
   border-top: 1px solid var(--rule);
 }
 
-/* ─── Spotify embed ──────────────────────────────────────────────
-   Fixed height by design — Spotify's iframe does not reflow. */
+/* ─── Feed embeds ────────────────────────────────────────────────
+   Fixed height by design — these iframes do not reflow. */
 .stream-card__spotify iframe {
   width: 100%;
   height: 352px;
@@ -1467,3 +1467,229 @@ body.nav-open .site-nav__logo { color: var(--sea) !important; }
 @media (max-width: 640px) {
   .stream-card__spotify iframe { height: 380px; }
 }
+
+
+/* ═══ LISTENING ═══════════════════════════════════════════════════ */
+
+.generator__head {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--step-3);
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: var(--space-xs);
+}
+
+.generator__sub {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--ink-muted);
+  margin-bottom: var(--space-lg);
+}
+
+/* The chips are buttons here and links elsewhere — same look either way. */
+.generator__chip { background: none; cursor: pointer; font: inherit; }
+.generator__chip[aria-pressed='true'] {
+  color: var(--paper);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.generator__result { margin-top: var(--space-xl); }
+
+.generator__blurb {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+  margin-bottom: var(--space-md);
+  max-width: 42ch;
+}
+
+.generator__player {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  background: var(--ink-deep);
+}
+.generator__player iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.generator__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+  align-items: center;
+  margin-top: var(--space-md);
+}
+.generator__reshuffle {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--gold-ink);
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--font-label);
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding: 13px 0;
+}
+.generator__reshuffle:hover { color: var(--gold-ink); }
+
+.generator__tracks {
+  list-style: none;
+  counter-reset: track;
+  margin-top: var(--space-xl);
+  border-top: 1px solid var(--rule);
+}
+.generator__tracks li {
+  counter-increment: track;
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  gap: var(--space-md);
+  align-items: baseline;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--rule);
+}
+.generator__tracks li::before {
+  content: counter(track, decimal-leading-zero);
+  font-family: var(--font-label);
+  font-size: var(--step--2);
+  color: var(--gold-ink);
+  letter-spacing: 0.1em;
+}
+.generator__tracks .t {
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  color: var(--ink);
+}
+.generator__tracks .a {
+  font-family: var(--font-label);
+  font-size: var(--step--2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .generator__tracks li { grid-template-columns: 2rem 1fr; }
+  .generator__tracks .a { grid-column: 2; text-align: left; }
+}
+
+/* ─── Pre-made playlists ─────────────────────────────────────── */
+.made__item { margin: 0 0 var(--space-3xl); }
+.made__meta { margin-bottom: var(--space-sm); }
+.made__title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 500;
+  color: var(--ink);
+}
+.made__blurb {
+  display: block;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+  margin-top: var(--space-2xs);
+}
+.made__embed {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  background: var(--ink-deep);
+}
+.made__embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* ─── Homepage listening feature ─────────────────────────────── */
+.listening-feature__head {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--step-3);
+  line-height: 1.1;
+  color: var(--ink);
+  max-width: 18ch;
+  text-wrap: balance;
+}
+.listening-feature__sub {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--ink-muted);
+  margin: var(--space-xs) 0 var(--space-lg);
+}
+.listening-feature__chips { margin-bottom: 0; }
+
+/* ═══ NOW ═════════════════════════════════════════════════════════
+   A ledger of the present tense. Label left, thing right. */
+.now-list { margin: 0; }
+
+.now-row {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: var(--space-lg);
+  align-items: baseline;
+  padding: var(--space-lg) 0;
+  border-top: 1px solid var(--rule);
+}
+.now-row:last-child { border-bottom: 1px solid var(--rule); }
+
+.now-row__label {
+  font-family: var(--font-label);
+  font-size: var(--step--2);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+
+.now-row__value { margin: 0; }
+
+.now-row__what {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.now-row__when {
+  display: block;
+  font-family: var(--font-label);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  margin-top: var(--space-2xs);
+}
+
+@media (max-width: 640px) {
+  .now-row { grid-template-columns: 1fr; gap: var(--space-2xs); }
+}
+
+/* ─── Dev-only note ──────────────────────────────────────────────
+   Never ships: wrapped in import.meta.env.DEV at the call site. */
+.dev-note {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: var(--oxblood);
+  color: var(--sea);
+  font-family: var(--font-label);
+  font-size: var(--step--2);
+  padding: var(--space-sm) var(--space-lg);
+  text-align: center;
+}
+.dev-note code { background: rgba(255,255,255,0.15); padding: 1px 5px; }

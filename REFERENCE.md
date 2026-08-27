@@ -75,6 +75,7 @@ Needs Node 18+. Currently running Node 24.16.0, npm 11.13.0.
 | `npm run build` | Builds to `dist/`. **The safety net — run before every push.** |
 | `npm run preview` | Serves the built `dist/` to check the real output |
 | `npm run astro -- --help` | Astro CLI |
+| `npm run music:import -- "<playlist url>"` | Adds a YouTube playlist's songs to the library |
 
 ---
 
@@ -121,8 +122,11 @@ src/
   data/
     quotes.json       the quote database
     QUOTES.md         how to add to it
+    music.json        the song library (built by npm run music:import)
+    playlists.json    pre-made YouTube playlists
   lib/                logic, no markup
     taxonomy.ts       topics + forms. THE rename point.
+    music.ts          occasions + the playlist-building helpers
     issues.ts         issue numbers, derived from dates
     quotes.ts         quote validation, placement rules, pooling
     dates.ts          the one date formatter (UTC — see §9)
@@ -137,6 +141,8 @@ src/
     index.astro             /
     archive.astro           /archive
     living.astro            /living
+    listening.astro         /listening  — playlists + the generator
+    now.astro               /now        — derived from Living
     cameron.astro           /cameron
     [section]/index.astro   /drink, /fitness, /endorsements … (9 pages)
     [section]/[slug].astro  /drink/the-13-whiskey
@@ -252,6 +258,27 @@ The issue number comes from `currentIssue()` and needs no maintenance.
 
 Timing of the drifting line is in `src/components/QuoteDrift.astro`: `HOLD` (7s on screen) and
 `SILENCE` (4.2s gap). The silence is deliberate — a ticker never stops and thoughts do.
+
+### Music — occasions, playlists, the generator
+
+`src/lib/music.ts` holds the occasion names (rename freely — slugs in `music.json` don't move) and
+the two URL builders. The generator itself is the inline script at the bottom of
+`src/pages/listening.astro`.
+
+It leans on two undocumented-but-stable YouTube behaviours, worth knowing if either ever breaks:
+
+- `/embed/<id>?playlist=<id>,<id>` builds an **anonymous playlist** from arbitrary video IDs. This
+  is the entire reason the generator can exist without a backend.
+- `/watch_videos?video_ids=…` 303-redirects to a real temporary playlist, which is the
+  "Open in YouTube" handoff.
+
+Neither needs an API key. If YouTube retires them, the fallback is the Data API with a key, which
+means a build step and a quota.
+
+### Adding /watching or /reading
+
+`/listening` is deliberately built as the first of a set. A sibling room follows the same shape:
+a data file, a `lib/` module for its taxonomy, a page, and a nav entry in the rooms group.
 
 ### Redirects
 

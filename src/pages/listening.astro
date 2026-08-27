@@ -1,0 +1,181 @@
+---
+/*  Listening — playlists, and the generator.
+
+    The generator runs entirely in the browser: the library ships as
+    JSON in the page, the visitor picks an occasion, and the player is
+    handed an anonymous playlist built from the matching video IDs.
+    Nothing server-side, no API key.
+
+    Built as the first of a set — /watching and /reading slot in beside
+    it as siblings when there is something to put in them.
+*/
+import Base from '../layouts/Base.astro';
+import QuoteRail from '../components/QuoteRail.astro';
+import { allOccasions, madePlaylists, songs, untaggedCount } from '../lib/music';
+
+const occasions = allOccasions();
+const untagged = untaggedCount();
+
+/* Only tagged songs reach the browser — an untagged library is dead weight. */
+const payload = songs
+  .filter(s => s.moods?.length)
+  .map(s => ({ i: s.id, t: s.title, a: s.artist, m: s.moods }));
+---
+
+<Base
+  title="Listening"
+  description="Playlists, and a generator that builds one from the library for whatever you're doing."
+>
+  <section class="section--lg">
+    <div class="container">
+
+      <header class="page-head">
+        <p class="kicker">Listening</p>
+        <h1 class="page-title">What&rsquo;s on.</h1>
+        <p class="page-sub">
+          Playlists that already exist, and one that doesn&rsquo;t until you ask for it.
+        </p>
+      </header>
+
+      <!-- ═══ THE GENERATOR ═══════════════════════════════════ -->
+      <section class="generator" id="generator" data-songs={JSON.stringify(payload)}>
+        <h2 class="generator__head">Build one.</h2>
+        <p class="generator__sub">Pick the occasion. Everything below is off the same shelf.</p>
+
+        <div class="chip-row" role="group" aria-label="Choose an occasion">
+          {occasions.map(o => (
+            <button
+              class="filter-chip generator__chip"
+              data-mood={o.slug}
+              data-count={o.count}
+              aria-pressed="false"
+              type="button"
+            >{o.name}</button>
+          ))}
+        </div>
+
+        <div class="generator__result" id="gen-result" hidden>
+          <p class="generator__blurb" id="gen-blurb"></p>
+          <div class="generator__player" id="gen-player"></div>
+          <div class="generator__actions">
+            <a class="more-link" id="gen-yt" href="#" target="_blank" rel="noopener">Open in YouTube &nearr;</a>
+            <button class="more-link generator__reshuffle" id="gen-shuffle" type="button">Shuffle again</button>
+          </div>
+          <ol class="generator__tracks" id="gen-tracks"></ol>
+        </div>
+
+        <p class="empty-note" id="gen-empty" hidden></p>
+      </section>
+
+      <div class="dinkus" role="separator" aria-hidden="true"><span></span></div>
+
+      <!-- ═══ PRE-MADE ════════════════════════════════════════ -->
+      {madePlaylists.length > 0 && (
+        <section class="made">
+          <h2 class="generator__head">Already made.</h2>
+          {madePlaylists.map(p => (
+            <figure class="made__item">
+              <figcaption class="made__meta">
+                <span class="made__title">{p.title}</span>
+                {p.blurb && <span class="made__blurb">{p.blurb}</span>}
+              </figcaption>
+              <div class="made__embed">
+                <iframe
+                  src={`https://www.youtube.com/embed/videoseries?list=${p.id}&rel=0`}
+                  title={p.title}
+                  loading="lazy"
+                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                />
+              </div>
+            </figure>
+          ))}
+        </section>
+      )}
+
+      <QuoteRail count={2} seed="listening" />
+
+      <div class="folio">
+        <a href="/now" class="folio__link">What else is current &rarr;</a>
+        <span>Listening</span>
+      </div>
+
+    </div>
+  </section>
+</Base>
+
+{import.meta.env.DEV && untagged > 0 && (
+  <div class="dev-note">
+    <strong>{untagged}</strong> of {songs.length} songs have no occasion tags, so the generator has
+    nothing to build. Add slugs to <code>moods</code> in <code>src/data/music.json</code> —
+    see <code>PUBLISHING.md</code>. This note only appears in dev.
+  </div>
+)}
+
+<script>
+  import { OCCASIONS, embedUrl, watchUrl } from '../lib/music';
+
+  const root = document.getElementById('generator');
+  if (root) {
+    const songs = JSON.parse(root.dataset.songs || '[]');
+    const result = document.getElementById('gen-result')!;
+    const empty  = document.getElementById('gen-empty')!;
+    const player = document.getElementById('gen-player')!;
+    const tracks = document.getElementById('gen-tracks')!;
+    const blurb  = document.getElementById('gen-blurb')!;
+    const ytLink = document.getElementById('gen-yt') as HTMLAnchorElement;
+    const chips  = [...document.querySelectorAll<HTMLButtonElement>('.generator__chip')];
+
+    const shuffle = <T,>(a: T[]) => {
+      const out = [...a];
+      for (let i = out.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [out[i], out[j]] = [out[j], out[i]];
+      }
+      return out;
+    };
+
+    let current: string | null = null;
+
+    function build(mood: string, pushUrl = true) {
+      current = mood;
+      const meta = (OCCASIONS as any)[mood];
+      chips.forEach(c => c.setAttribute('aria-pressed', String(c.dataset.mood === mood)));
+
+      const picked = shuffle(songs.filter((s: any) => s.m.includes(mood))).slice(0, 25);
+
+      if (!picked.length) {
+        result.hidden = true;
+        empty.hidden = false;
+        empty.textContent = `Nothing filed under ${meta?.name ?? mood} yet.`;
+      } else {
+        empty.hidden = true;
+        result.hidden = false;
+        const ids = picked.map((s: any) => s.i);
+
+        blurb.textContent = meta?.blurb ?? '';
+        player.innerHTML =
+          `<iframe src="${embedUrl(ids)}" title="${meta?.name ?? 'Playlist'}" loading="lazy" ` +
+          `allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        ytLink.href = watchUrl(ids);
+        tracks.innerHTML = picked
+          .map((s: any) => `<li><span class="t">${s.t}</span><span class="a">${s.a}</span></li>`)
+          .join('');
+      }
+
+      if (pushUrl) {
+        const u = new URL(location.href);
+        u.searchParams.set('m', mood);
+        history.replaceState(null, '', u);
+      }
+    }
+
+    chips.forEach(c => c.addEventListener('click', () => build(c.dataset.mood!)));
+    document.getElementById('gen-shuffle')
+      ?.addEventListener('click', () => current && build(current, false));
+
+    /* A shared link opens straight into that playlist. */
+    const wanted = new URLSearchParams(location.search).get('m');
+    if (wanted && chips.some(c => c.dataset.mood === wanted)) build(wanted, false);
+  }
+</script>

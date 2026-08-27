@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { allSections, topicName, formName } from '../lib/taxonomy';
 import { currentIssue } from '../lib/issues';
+import { allOccasions } from '../lib/music';
 import { formatDate } from '../lib/dates';
 import QuoteInterstitial from '../components/QuoteInterstitial.astro';
 import QuoteRail from '../components/QuoteRail.astro';
@@ -15,6 +16,7 @@ const latestPosts = allPosts
 
 const topics = allSections().filter(s => s.kind === 'topic');
 const issue = await currentIssue();
+const occasions = allOccasions();
 ---
 
 <Base title="Cameron Hickey" overHero={true}>
@@ -114,12 +116,32 @@ const issue = await currentIssue();
     </div>
   </section>
 
+  <!-- ═══ LISTENING ════════════════════════════════════════════ -->
+  <section class="section listening-feature">
+    <div class="container--wide">
+      <span class="section-label">Listening</span>
+      <h2 class="listening-feature__head">A playlist for whatever you&rsquo;re doing.</h2>
+      <p class="listening-feature__sub">
+        Built from the same shelf of records, on request.
+      </p>
+      <div class="chip-row listening-feature__chips">
+        {occasions.map(o => (
+          <a href={`/listening?m=${o.slug}`} class="filter-chip">{o.name}</a>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <div class="dinkus" role="separator" aria-hidden="true"><span></span></div>
 
   <!-- ═══ DOORS ════════════════════════════════════════════════ -->
   <section class="section">
     <div class="container--wide">
       <div class="doors">
+        <a href="/now" class="door">
+          <span class="door__name">Now</span>
+          <p class="door__desc">What&rsquo;s current. Reading, listening, running — as of today.</p>
+        </a>
         <a href="/living" class="door">
           <span class="door__name">Living</span>
           <p class="door__desc">The feed. Running, drinking, parenting. Everything in order.</p>
