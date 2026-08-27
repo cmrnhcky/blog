@@ -29,5 +29,107 @@
       "money"
     ],
     "verified": true
+  },
+  {
+    "text": "The truth is rarely pure and never simple.",
+    "author": "Oscar Wilde",
+    "source": "The Importance of Being Earnest, Act I",
+    "year": 1895,
+    "tags": [],
+    "verified": true
+  },
+  {
+    "text": "Price is nothing. Value is everything.",
+    "tags": []
+  },
+  {
+    "text": "Well done is better than well said.",
+    "author": "Benjamin Franklin",
+    "year": 1737,
+    "tags": [],
+    "verified": true,
+    "source": "Poor Richard's Almanack"
+  },
+  {
+    "text": "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.",
+    "author": "Ralph Waldo Emerson",
+    "tags": [],
+    "verified": false,
+    "note": "ATTRIBUTION DISPUTED. Universally credited to Emerson; not found in his published works. Also circulates as e.e. cummings. No primary source."
+  },
+  {
+    "text": "Live in the sunshine, swim the sea, drink the wild air.",
+    "author": "Ralph Waldo Emerson",
+    "tags": [],
+    "verified": true,
+    "source": "Merlin's Song",
+    "year": 1867
+  },
+  {
+    "text": "What you do speaks so loudly that I cannot hear what you say.",
+    "author": "Ralph Waldo Emerson",
+    "tags": [],
+    "verified": true,
+    "source": "Social Aims",
+    "year": 1876
+  },
+  {
+    "text": "Nothing great was ever achieved without enthusiasm.",
+    "author": "Ralph Waldo Emerson",
+    "tags": [],
+    "verified": true,
+    "source": "Circles, Essays: First Series",
+    "year": 1841
+  },
+  {
+    "text": "The greater danger for most of us lies not in setting our aim too high and falling short, but in setting our aim too low, and achieving our mark.",
+    "author": "Michelangelo",
+    "tags": [],
+    "verified": false,
+    "note": "ATTRIBUTION DISPUTED. No primary source in Michelangelo's letters or poems; appears to be 20th-century. Also the longest line here at 29 words."
+  },
+  {
+    "text": "In theory, there is no difference between theory and practice. But in practice, there is.",
+    "author": "Yogi Berra",
+    "tags": [],
+    "verified": false,
+    "note": "Attributed to Berra, but also to Van de Snepscheut and others. No primary source."
+  },
+  {
+    "text": "I find that the harder I work, the more luck I seem to have.",
+    "author": "Thomas Jefferson",
+    "tags": [],
+    "verified": false,
+    "note": "ATTRIBUTION DISPUTED. The Jefferson Foundation lists this as spurious — not found in his papers. Older versions run to Coleman Cox (1922)."
+  },
+  {
+    "text": "Never interrupt your enemy when he is making a mistake.",
+    "author": "Napoleon Bonaparte",
+    "tags": [],
+    "verified": false,
+    "note": "ATTRIBUTION DISPUTED. Universally credited to Napoleon; no primary source in his correspondence."
+  },
+  {
+    "text": "Let us never negotiate out of fear. But let us never fear to negotiate.",
+    "author": "John F. Kennedy",
+    "year": 1961,
+    "tags": [],
+    "verified": true,
+    "source": "Inaugural Address"
+  },
+  {
+    "text": "History doesn't repeat itself, but it does rhyme.",
+    "author": "Mark Twain",
+    "tags": [],
+    "verified": false,
+    "note": "ATTRIBUTION DISPUTED. Not found in Twain. The Mark Twain Project lists it as unverified."
+  },
+  {
+    "text": "And, when you want something, all the universe conspires in helping you to achieve it.",
+    "author": "Paulo Coelho",
+    "source": "The Alchemist",
+    "tags": [],
+    "verified": true,
+    "year": 1988
   }
 ]
