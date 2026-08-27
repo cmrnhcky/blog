@@ -10,7 +10,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "music:import": "node tools/import-playlist.mjs"
+    "music:import": "node tools/import-playlist.mjs",
+    "quotes:import": "node tools/import-quotes.mjs",
+    "post": "node tools/post.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
