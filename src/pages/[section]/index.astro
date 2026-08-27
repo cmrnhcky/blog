@@ -1,0 +1,74 @@
+---
+/*  One template for all nine section pages — six topics and three forms.
+
+    Topic and form pages are the same thing: a filtered list of posts.
+    Two sibling dynamic routes under the same param ([section]/index and
+    [section]/[slug]) avoid the collision two separate top-level dynamic
+    routes would cause.
+
+    getStaticPaths returns exactly nine slugs, so this is not a
+    catch-all — /living, /cameron, /archive and /404 are unaffected.
+*/
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { allSections, topicName, formName, isForm } from '../../lib/taxonomy';
+import QuoteRail from '../../components/QuoteRail.astro';
+
+export async function getStaticPaths() {
+  return allSections().map(s => ({
+    params: { section: s.slug },
+    props: { ...s },
+  }));
+}
+
+const { slug, kind, name, blurb } = Astro.props;
+
+const all = await getCollection('saying', ({ data }) => !data.draft);
+const posts = all
+  .filter(p => (kind === 'topic' ? p.data.topic === slug : p.data.form === slug))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title={name} description={blurb}>
+  <section class="section--lg">
+    <div class="container">
+
+      <header class="page-head">
+        <p class="kicker">{kind === 'form' ? 'A recurring form' : 'Topic'}</p>
+        <h1 class="page-title">{name}</h1>
+        <p class="page-sub">{blurb}</p>
+      </header>
+
+      {posts.length > 0 ? (
+        <div class="post-list">
+          {posts.map(post => (
+            <a href={`/${post.data.topic}/${post.id}`} class="post-card">
+              <p class="post-card__pillar">
+                {kind === 'form'
+                  ? topicName(post.data.topic)
+                  : post.data.form && formName(post.data.form)}
+              </p>
+              <h2 class="post-card__title">{post.data.title}</h2>
+              <p class="post-card__excerpt">{post.data.excerpt}</p>
+              <p class="post-card__date">
+                {post.data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </p>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="empty-note">
+          Nothing filed here yet. {isForm(slug) ? 'The form is waiting on the right piece.' : 'Give it time.'}
+        </p>
+      )}
+
+      <QuoteRail count={2} seed={slug} />
+
+      <div class="folio">
+        <a href="/archive" class="folio__link">&larr; The archive</a>
+        <span>{kind === 'form' ? 'A form' : 'A topic'}</span>
+      </div>
+
+    </div>
+  </section>
+</Base>

@@ -1,13 +1,18 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { z } from 'zod';
+import { z } from 'astro:content';
+import { topicSlugs, formSlugs } from './lib/taxonomy';
 
+/* Two axes — see src/lib/taxonomy.ts.
+   `topic` is required and is the navigation. `form` is optional and is
+   the franchise; a post without one is its own escape hatch. */
 const saying = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/saying' }),
   schema: z.object({
     title:    z.string(),
     date:     z.coerce.date(),
-    pillar:   z.enum(['Pours', 'Miles', 'Bets', 'Kids', 'Essentials']),
+    topic:    z.enum(topicSlugs),
+    form:     z.enum(formSlugs).optional(),
     excerpt:  z.string(),
     draft:    z.boolean().default(false),
     featured: z.boolean().default(false),
@@ -16,20 +21,7 @@ const saying = defineCollection({
   }),
 });
 
-const guessing = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/guessing' }),
-  schema: z.object({
-    date:      z.coerce.date(),
-    event:     z.string(),
-    category:  z.enum(['sports', 'markets', 'prediction', 'other']),
-    stake:     z.number().optional(),
-    odds:      z.number().optional(),
-    result:    z.enum(['W', 'L', 'P', 'pending']),
-    payout:    z.number().optional(),
-    reasoning: z.string(),
-  }),
-});
-
+/* The feed. Chronological, no title, no taxonomy — deliberately. */
 const living = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/living' }),
   schema: z.object({
@@ -43,4 +35,4 @@ const living = defineCollection({
   }),
 });
 
-export const collections = { saying, guessing, living };
+export const collections = { saying, living };

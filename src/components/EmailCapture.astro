@@ -1,0 +1,44 @@
+---
+/*  The dark closing bookend. Was duplicated verbatim between the
+    homepage and the article template, including the honeypot — two
+    copies of a form is two places for the Netlify wiring to drift.
+
+    `idPrefix` keeps element ids unique when more than one instance
+    could appear on a page.
+*/
+interface Props {
+  /** Pull the band out to the full page width from inside a container. */
+  inset?: boolean;
+  idPrefix?: string;
+}
+const { inset = false, idPrefix = 'main' } = Astro.props;
+---
+
+<section class:list={['email-capture', inset && 'email-capture--inset']} id="newsletter">
+  <div class="container">
+    <span class="email-capture__heading">Occasional notes.</span>
+    <span class="email-capture__sub">No schedule. No spam. Just the things worth sharing.</span>
+    <form
+      name="notes-signup"
+      method="POST"
+      action="/thank-you"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      class="email-capture__form"
+    >
+      <input type="hidden" name="form-name" value="notes-signup" />
+      <label class="sr-only" for={`${idPrefix}-bot-field`}>Leave this empty</label>
+      <input id={`${idPrefix}-bot-field`} type="text" name="bot-field" class="sr-only" tabindex="-1" autocomplete="off" />
+      <label class="sr-only" for={`${idPrefix}-email`}>Email address</label>
+      <input
+        id={`${idPrefix}-email`}
+        class="email-capture__input"
+        type="email"
+        name="email"
+        placeholder="your@email.com"
+        required
+      />
+      <button class="email-capture__btn" type="submit">I&rsquo;m in</button>
+    </form>
+  </div>
+</section>

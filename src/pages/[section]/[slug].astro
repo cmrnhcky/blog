@@ -1,0 +1,70 @@
+---
+/*  The article. Kicker → headline → standfirst → dateline → drop cap
+    → marginalia → folio. Ported from the old /saying/[slug].
+
+    `section` is the article's topic, so URLs read /drink/the-13-whiskey.
+*/
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+import { topicName, formName } from '../../lib/taxonomy';
+import { issueFor } from '../../lib/issues';
+import QuoteRail from '../../components/QuoteRail.astro';
+import EmailCapture from '../../components/EmailCapture.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('saying', ({ data }) => !data.draft);
+  return posts.map(post => ({
+    params: { section: post.data.topic, slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const issue = await issueFor(post.data.date);
+
+const dateFormatted = post.data.date.toLocaleDateString('en-US', {
+  month: 'long', day: 'numeric', year: 'numeric',
+});
+---
+
+<Base title={post.data.title} description={post.data.excerpt}>
+  <article class="section--lg">
+    <div class="container">
+
+      <header class="article-head">
+        <p class="kicker">
+          {post.data.form && (
+            <>
+              <a href={`/${post.data.form}`}>{formName(post.data.form)}</a>
+              <span class="kicker__sep">/</span>
+            </>
+          )}
+          <a href={`/${post.data.topic}`}>{topicName(post.data.topic)}</a>
+        </p>
+
+        <h1 class="article-title">{post.data.title}</h1>
+
+        {post.data.excerpt && <p class="standfirst">{post.data.excerpt}</p>}
+
+        <p class="dateline">By <strong>Cameron Hickey</strong> &middot; {dateFormatted}</p>
+      </header>
+
+      {post.data.ritual && <p class="ritual-stamp">{post.data.ritual}</p>}
+
+      <div class="prose prose--feature">
+        <Content />
+      </div>
+
+      <QuoteRail count={2} seed={post.id} />
+
+      <div class="folio">
+        <a href="/archive" class="folio__link">&larr; The archive</a>
+        {issue && <span>No. {issue.no} &middot; {issue.label}</span>}
+      </div>
+
+      <EmailCapture inset={true} idPrefix="post" />
+
+    </div>
+  </article>
+</Base>

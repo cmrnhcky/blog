@@ -1,0 +1,72 @@
+---
+/*  The archive — everything, grouped by issue.
+
+    Replaces the old /saying index. Grouping by issue rather than by
+    date is the point: an issue is finished, not stalled, so a thin
+    month still reads as a completed thing rather than a gap.
+*/
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { allIssues, issueKeyFor } from '../lib/issues';
+import { allSections, topicName, formName } from '../lib/taxonomy';
+
+const posts = (await getCollection('saying', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const issues = (await allIssues()).reverse();
+const sections = allSections();
+const topics = sections.filter(s => s.kind === 'topic');
+const forms  = sections.filter(s => s.kind === 'form');
+
+const byIssue = issues
+  .map(issue => ({ issue, posts: posts.filter(p => issueKeyFor(p.data.date) === issue.key) }))
+  .filter(g => g.posts.length > 0);
+---
+
+<Base title="Archive" description="Everything Cameron Hickey has published, by issue.">
+  <section class="section--lg">
+    <div class="container">
+
+      <header class="page-head">
+        <h1 class="page-title">Archive.</h1>
+        <p class="page-sub">Everything, by issue. Whenever inspired — the structure carries the coherence so the cadence doesn&rsquo;t have to.</p>
+      </header>
+
+      <nav class="chip-row" aria-label="Browse by topic">
+        {topics.map(t => <a href={`/${t.slug}`} class="filter-chip">{t.name}</a>)}
+      </nav>
+      <nav class="chip-row chip-row--forms" aria-label="Browse by form">
+        {forms.map(f => <a href={`/${f.slug}`} class="filter-chip filter-chip--form">{f.name}</a>)}
+      </nav>
+
+      {byIssue.length > 0 ? (
+        byIssue.map(({ issue, posts: issuePosts }) => (
+          <section class="issue-group">
+            <h2 class="issue-group__head">
+              <span class="issue-group__no">No. {issue.no}</span>
+              <span class="issue-group__label">{issue.label}</span>
+            </h2>
+            <div class="post-list">
+              {issuePosts.map(post => (
+                <a href={`/${post.data.topic}/${post.id}`} class="post-card">
+                  <p class="post-card__pillar">
+                    {post.data.form && <>{formName(post.data.form)} &middot; </>}
+                    {topicName(post.data.topic)}
+                  </p>
+                  <h3 class="post-card__title">{post.data.title}</h3>
+                  <p class="post-card__excerpt">{post.data.excerpt}</p>
+                  <p class="post-card__date">
+                    {post.data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </section>
+        ))
+      ) : (
+        <p class="empty-note">Nothing published yet.</p>
+      )}
+
+    </div>
+  </section>
+</Base>

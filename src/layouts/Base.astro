@@ -1,6 +1,11 @@
 ---
 import '../styles/global.css';
 import QuoteDrift from '../components/QuoteDrift.astro';
+import { allSections } from '../lib/taxonomy';
+
+const sections = allSections();
+const topics = sections.filter(s => s.kind === 'topic');
+const forms  = sections.filter(s => s.kind === 'form');
 
 interface Props {
   title: string;
@@ -58,9 +63,6 @@ const isActive = (href: string) =>
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Preload first hero image for LCP -->
-    <link rel="preload" as="image" href="/hero/IMG_1369.jpeg" fetchpriority="high" />
-
     <!-- Google Fonts — preconnect before stylesheet to avoid render block -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -79,24 +81,37 @@ const isActive = (href: string) =>
     <nav class:list={['site-nav', overHero && 'site-nav--over-hero']} aria-label="Main navigation" id="site-nav">
       <div class="container--wide site-nav__inner">
         <a href="/" class="site-nav__logo">Cameron Hickey</a>
-        <ul class="site-nav__links">
-          <li><a href="/living" class={isActive('/living') ? 'nav-active' : ''}>Living</a></li>
-          <li><a href="/saying" class={isActive('/saying') ? 'nav-active' : ''}>Saying</a></li>
-          <li><a href="/guessing" class={isActive('/guessing') ? 'nav-active' : ''}>Guessing</a></li>
-          <li><a href="/cameron" class={isActive('/cameron') ? 'nav-active' : ''}>Cameron</a></li>
-        </ul>
-        <button class="nav-burger" aria-label="Toggle menu" aria-expanded="false" id="nav-burger">
+        <button class="nav-burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-overlay" id="nav-burger">
           <span></span><span></span><span></span>
         </button>
       </div>
     </nav>
 
-    <!-- Mobile overlay menu -->
+    <!-- The only nav. Three groups: topics, then the rooms, then the forms. -->
     <div class="nav-overlay" id="nav-overlay" aria-hidden="true">
-      <a href="/living" class={`nav-overlay-link${isActive('/living') ? ' nav-active' : ''}`}>Living</a>
-      <a href="/saying" class={`nav-overlay-link${isActive('/saying') ? ' nav-active' : ''}`}>Saying</a>
-      <a href="/guessing" class={`nav-overlay-link${isActive('/guessing') ? ' nav-active' : ''}`}>Guessing</a>
-      <a href="/cameron" class={`nav-overlay-link${isActive('/cameron') ? ' nav-active' : ''}`}>Cameron</a>
+      <nav class="nav-overlay__inner" aria-label="Site sections">
+        <ul class="nav-group nav-group--topics">
+          {topics.map(t => (
+            <li><a href={`/${t.slug}`} class={isActive(`/${t.slug}`) ? 'nav-active' : ''}>{t.name}</a></li>
+          ))}
+        </ul>
+
+        <hr class="nav-group__rule" />
+
+        <ul class="nav-group nav-group--rooms">
+          <li><a href="/living"  class={isActive('/living')  ? 'nav-active' : ''}>Living</a></li>
+          <li><a href="/archive" class={isActive('/archive') ? 'nav-active' : ''}>Archive</a></li>
+          <li><a href="/cameron" class={isActive('/cameron') ? 'nav-active' : ''}>Cameron</a></li>
+        </ul>
+
+        <hr class="nav-group__rule" />
+
+        <ul class="nav-group nav-group--forms">
+          {forms.map(f => (
+            <li><a href={`/${f.slug}`} class={isActive(`/${f.slug}`) ? 'nav-active' : ''}>{f.name}</a></li>
+          ))}
+        </ul>
+      </nav>
     </div>
 
     <main>
@@ -148,7 +163,18 @@ const isActive = (href: string) =>
         burger.addEventListener('click', function () {
           var open = document.body.classList.toggle('nav-open');
           burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+          burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
           overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+        });
+
+        // Escape closes the overlay.
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && document.body.classList.contains('nav-open')) {
+            document.body.classList.remove('nav-open');
+            burger.setAttribute('aria-expanded', 'false');
+            burger.setAttribute('aria-label', 'Open menu');
+            overlay.setAttribute('aria-hidden', 'true');
+          }
         });
 
         // Close overlay on link click

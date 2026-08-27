@@ -1,5 +1,10 @@
-/now     /living   301
-/oscar   /living   301
-/ledger  /guessing 301
-/writing /saying   301
-/about   /cameron  301
+/saying/the-13-whiskey  /drink/the-13-whiskey  301
+/saying/*               /archive               301
+/saying                 /archive               301
+/writing/*              /archive               301
+/writing                /archive               301
+/ledger                 /archive               301
+/guessing               /archive               301
+/now                    /living                301
+/oscar                  /living                301
+/about                  /cameron               301

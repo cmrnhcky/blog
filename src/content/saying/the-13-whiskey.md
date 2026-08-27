@@ -1,7 +1,8 @@
 ---
 title: "The $13 Whiskey That Drinks Like $40"
 date: 2026-06-01
-pillar: "Pours"
+topic: "drink"
+form: "endorsements"
 excerpt: "Evan Williams Black Label is not a secret. It is not a discovery. It is a decision — and most people are making the wrong one."
 draft: false
 featured: true

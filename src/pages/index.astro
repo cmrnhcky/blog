@@ -1,61 +1,49 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import { allSections, topicName, formName } from '../lib/taxonomy';
+import { currentIssue } from '../lib/issues';
 import QuoteInterstitial from '../components/QuoteInterstitial.astro';
 import QuoteRail from '../components/QuoteRail.astro';
+import EmailCapture from '../components/EmailCapture.astro';
 
 const allPosts = await getCollection('saying', ({ data }) => !data.draft);
 const latestPosts = allPosts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 
-const pillars = [
-  { name: 'Pours',      desc: 'Drinks with discernment. Beer, whiskey, gin. Value over prestige.',         href: '/saying?pillar=Pours' },
-  { name: 'Miles',      desc: 'Running, trails, the outdoors. Discipline and where it leads.',              href: '/saying?pillar=Miles' },
-  { name: 'Bets',       desc: 'Gambling with a bankroll brain. Value plays, honest wins and losses.',       href: '/saying?pillar=Bets' },
-  { name: 'Kids',       desc: 'Fatherhood, Oscar, the morning. First generation figuring it out.',          href: '/saying?pillar=Kids' },
-  { name: 'Essentials', desc: 'Must-have value-adds. Gear, tools, money. The frugal-but-not-cheap life.',  href: '/saying?pillar=Essentials' },
-];
+const topics = allSections().filter(s => s.kind === 'topic');
+const issue = await currentIssue();
 ---
 
 <Base title="Cameron Hickey" overHero={true}>
 
-  <!-- ═══ HERO — rotating photo crossfade ═════════════════════ -->
-  <!--
-    HERO PHOTOS — TODO: replace with real Cameron photos
-    Ideal shots:
-    1. Cady Way trail or local trail at sunrise — Florida light low through trees
-    2. The sliding back door from inside — morning light coming in
-    3. Florida beach horizon at golden hour
-    4. A cityscape from somewhere Cameron has actually stood
-    5. A stadium exterior, pub sign, or scenic overlook from a run
-    All landscape, minimum 1920×1080. Place in /public/hero/.
-  -->
-  <section class="hero" id="top">
-    <div class="hero-bg" aria-hidden="true">
-      <div class="hero-slide" style="--i:0"><img src="/hero/IMG_1369.jpeg" alt="" /></div>
-      <div class="hero-slide" style="--i:1"><img src="/hero/IMG_6720.jpeg" alt="" /></div>
-      <div class="hero-slide" style="--i:2"><img src="/hero/IMG_2109.JPG" alt="" /></div>
-      <div class="hero-slide" style="--i:3"><img src="/hero/IMG_2324.JPG" alt="" /></div>
-      <div class="hero-slide" style="--i:4"><img src="/hero/IMG_2619.JPG" alt="" /></div>
-    </div>
-    <div class="hero-overlay" aria-hidden="true"></div>
-    <div class="hero-grain" aria-hidden="true"></div>
+  <!-- ═══ THE COVER ════════════════════════════════════════════
+       Typographic, no photograph. The five-photo Ken Burns crossfade
+       it replaces was the weakest element on the site — a slideshow
+       is a 2014 move, it cost LCP, and the library was camera roll.
+       Type carries a cover perfectly well, and costs nothing. -->
+  <section class="cover" id="top">
+    <div class="cover__grain" aria-hidden="true"></div>
 
-    <div class="hero-content">
-      <div class="hero-manifesto">
-        <p class="label hero-attribution">Oscar Wilde &middot; 1892</p>
-        <blockquote class="quote-lg hero-quote">
+    <div class="cover__inner">
+      <p class="cover__issue">
+        {issue ? <>No. {issue.no} &middot; {issue.label}</> : <>The first issue</>}
+      </p>
+
+      <div class="cover__manifesto">
+        <p class="label cover__attribution">Oscar Wilde &middot; 1892</p>
+        <blockquote class="quote-lg cover__quote">
           &ldquo;A cynic is a man who knows the price of everything and the value of nothing.&rdquo;
         </blockquote>
-        <hr class="hero-rule" aria-hidden="true" />
-        <p class="display-md hero-counter">Price is nothing. Value is everything.</p>
+        <hr class="cover__rule" aria-hidden="true" />
+        <p class="display-md cover__counter">Price is nothing. Value is everything.</p>
       </div>
 
-      <div class="hero-identity">
-        <h1 class="display-xl hero-name">Cameron Hickey</h1>
-        <p class="label hero-bio">Father, founder and drinker amongst other nouns.</p>
-        <nav class="hero-socials" aria-label="Social links">
+      <div class="cover__identity">
+        <h1 class="cover__name">Cameron Hickey</h1>
+        <p class="label cover__bio">Father, founder and drinker amongst other nouns.</p>
+        <nav class="cover__socials" aria-label="Social links">
           <a href="https://www.linkedin.com/in/cmrnhcky/" target="_blank" rel="noopener" aria-label="LinkedIn">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
           </a>
@@ -72,18 +60,21 @@ const pillars = [
       </div>
     </div>
 
-    <a class="hero-scroll" href="#pillars" aria-label="Scroll down">↓</a>
+    <a class="cover__scroll" href="#latest" aria-label="Scroll down">↓</a>
   </section>
 
-  <!-- ═══ LATEST SAYING — warm ════════════════════════════════ -->
+  <!-- ═══ LATEST ═══════════════════════════════════════════════ -->
   {latestPosts.length > 0 && (
-    <section class="section" id="saying">
+    <section class="section" id="latest">
       <div class="container--wide">
-        <span class="section-label">Latest Saying</span>
+        <span class="section-label">Latest</span>
         <div class="post-grid">
           {latestPosts.map(post => (
-            <a href={`/saying/${post.id}`} class="post-card fade-up">
-              <span class="post-card__pillar">{post.data.pillar}</span>
+            <a href={`/${post.data.topic}/${post.id}`} class="post-card fade-up">
+              <span class="post-card__pillar">
+                {post.data.form && <>{formName(post.data.form)} &middot; </>}
+                {topicName(post.data.topic)}
+              </span>
               <h2 class="post-card__title">{post.data.title}</h2>
               <p class="post-card__excerpt">{post.data.excerpt}</p>
               <span class="post-card__date">
@@ -92,33 +83,28 @@ const pillars = [
             </a>
           ))}
         </div>
-        <p class="more-wrap"><a href="/saying" class="more-link">All saying &rarr;</a></p>
+        <p class="more-wrap"><a href="/archive" class="more-link">The archive &rarr;</a></p>
       </div>
     </section>
   )}
 
   <div class="dinkus" role="separator" aria-hidden="true"><span></span></div>
 
-  <!-- ═══ PILLARS — warm ═══════════════════════════════════════ -->
-  <section class="section" id="pillars">
+  <!-- ═══ TOPICS ═══════════════════════════════════════════════ -->
+  <section class="section" id="topics">
     <div class="container--wide">
-      <span class="section-label">Five Ways In.</span>
+      <span class="section-label">Six ways in.</span>
       <div class="pillars">
-        {pillars.map((p, i) => (
-          <a
-            href={p.href}
-            class="pillar-card fade-up"
-            style={`--n:${i}`}
-          >
-            <span class="pillar-card__name">{p.name}</span>
-            <p class="pillar-card__desc">{p.desc}</p>
+        {topics.map((t, i) => (
+          <a href={`/${t.slug}`} class="pillar-card fade-up" style={`--n:${i}`}>
+            <span class="pillar-card__name">{t.name}</span>
+            <p class="pillar-card__desc">{t.blurb}</p>
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- ═══ QUOTE LAYER — driven by src/data/quotes.json ═════════ -->
   <QuoteInterstitial />
 
   <section class="section">
@@ -129,7 +115,7 @@ const pillars = [
 
   <div class="dinkus" role="separator" aria-hidden="true"><span></span></div>
 
-  <!-- ═══ SECTION DOORS ══════════════════════════════════════ -->
+  <!-- ═══ DOORS ════════════════════════════════════════════════ -->
   <section class="section">
     <div class="container--wide">
       <div class="doors">
@@ -137,9 +123,9 @@ const pillars = [
           <span class="door__name">Living</span>
           <p class="door__desc">The feed. Running, drinking, parenting. Everything in order.</p>
         </a>
-        <a href="/guessing" class="door">
-          <span class="door__name">Guessing</span>
-          <p class="door__desc">Open record. Every bet, every prediction. Wins and losses both.</p>
+        <a href="/archive" class="door">
+          <span class="door__name">Archive</span>
+          <p class="door__desc">Everything published, by issue. The whole body of work.</p>
         </a>
         <a href="/cameron" class="door">
           <span class="door__name">Cameron</span>
@@ -149,35 +135,6 @@ const pillars = [
     </div>
   </section>
 
-  <!-- ═══ EMAIL CAPTURE — dark bookend ═════════════════════════ -->
-  <section class="email-capture" id="newsletter">
-    <div class="container">
-      <span class="email-capture__heading">Occasional notes.</span>
-      <span class="email-capture__sub">No schedule. No spam. Just the things worth sharing.</span>
-      <form
-        name="notes-signup"
-        method="POST"
-        action="/thank-you"
-        data-netlify="true"
-        netlify-honeypot="bot-field"
-        class="email-capture__form"
-      >
-        <input type="hidden" name="form-name" value="notes-signup" />
-        <label class="sr-only" for="bot-field-main">Leave this empty</label>
-        <input id="bot-field-main" type="text" name="bot-field" class="sr-only" tabindex="-1" autocomplete="off" />
-        <label class="sr-only" for="email-main">Email address</label>
-        <input
-          id="email-main"
-          class="email-capture__input"
-          type="email"
-          name="email"
-          placeholder="your@email.com"
-          required
-        />
-        <button class="email-capture__btn" type="submit">I&rsquo;m in</button>
-      </form>
-    </div>
-  </section>
+  <EmailCapture />
 
 </Base>
-
