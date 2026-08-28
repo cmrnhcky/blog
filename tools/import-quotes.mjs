@@ -3,6 +3,7 @@
    Text or spreadsheet → quotes.json.
 
      npm run quotes:import -- inbox.txt
+     npm run quotes:import -- inbox.txt --dry     (preview, writes nothing)
      npm run quotes:import -- "~/Downloads/Sheet1.csv"
 
    NEVER edit src/data/quotes.json by hand. One missed comma or
@@ -37,6 +38,7 @@ if (!arg) {
   console.error('Usage: npm run quotes:import -- <file.txt|file.csv>');
   process.exit(1);
 }
+const dry = process.argv.includes('--dry');
 const file = arg.startsWith('~') ? arg.replace('~', homedir()) : arg;
 
 /* ── Cleanup ─────────────────────────────────────────────────────
@@ -131,7 +133,10 @@ for (const line of logical) {
 
   /* Inline attribution: an em dash with spaces, " -- ", or a closing
      quote mark followed straight by a hyphen. */
-  const m = line.match(/^(.*?)(?:\s—\s|\s--\s|"\s*-\s+)(.+)$/);
+  /* An em dash with a space before it, " -- ", or a closing quote mark
+     followed by a dash. The space *after* the dash is optional — half
+     of what gets pasted omits it. */
+  const m = line.match(/^(.*?)(?:\s+—\s*|\s+--\s+|["']\s*[-—]\s*)(.+)$/);
   let text = m ? m[1] : line;
   text = tidy(text).replace(/^["']+|["']+$/g, '').trim();
   if (!text) continue;
@@ -164,7 +169,8 @@ for (const q of staged) {
   console.log(`  + ${who.padEnd(22)} ${entry.text.slice(0, 46)}${entry.text.length > 46 ? '…' : ''}  (${words}w, ${where})`);
 }
 
-await writeFile(LIBRARY, JSON.stringify(library, null, 2) + '\n');
+if (dry) console.log('\n  --dry: nothing written.');
+else await writeFile(LIBRARY, JSON.stringify(library, null, 2) + '\n');
 
 const phrases = library.filter(q => !q.author).length;
 const unverified = library.filter(q => q.author && !q.verified).length;

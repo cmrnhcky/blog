@@ -131,5 +131,195 @@
     "tags": [],
     "verified": true,
     "year": 1988
+  },
+  {
+    "text": "The fool doth think he is wise, but the wise man knows himself to be a fool.",
+    "author": "William Shakespeare",
+    "source": "As You Like It, Act V",
+    "tags": [],
+    "verified": true,
+    "year": 1600
+  },
+  {
+    "text": "Every life is in many days, day after day. We walk through ourselves, meeting robbers, ghosts, giants, old men, young men, wives, widows, brothers-in-love, but always meeting ourselves.",
+    "author": "James Joyce",
+    "source": "Ulysses",
+    "tags": [],
+    "verified": true,
+    "year": 1922
+  },
+  {
+    "text": "You miss 100% of the shots you don't take.",
+    "author": "Wayne Gretzky",
+    "tags": [],
+    "verified": true
+  },
+  {
+    "text": "The best way to predict the future is to create it.",
+    "author": "Peter Drucker",
+    "tags": [],
+    "verified": false,
+    "note": "ATTRIBUTION DISPUTED. The sourced version is Alan Kay, 1971: \"The best way to predict the future is to invent it.\" Drucker attribution has no primary source."
+  },
+  {
+    "text": "You either die a hero or live long enough to see yourself become the villain.",
+    "author": "Harvey Dent",
+    "tags": [],
+    "verified": true,
+    "source": "The Dark Knight",
+    "year": 2008,
+    "note": "Fictional — screenplay by Jonathan and Christopher Nolan. Attributed to the character, which is the honest way to run it."
+  },
+  {
+    "text": "Just win, baby",
+    "author": "Al Davis",
+    "tags": [],
+    "verified": true
+  },
+  {
+    "text": "Perhaps one did not want to be loved so much as to be understood.",
+    "author": "George Orwell",
+    "year": 1949,
+    "tags": [],
+    "verified": true
+  },
+  {
+    "text": "He who dares not offend cannot be honest.",
+    "author": "Thomas Paine",
+    "tags": [],
+    "verified": false,
+    "note": "Attributed to Paine. Widely cited, primary source not confirmed."
+  },
+  {
+    "text": "The most valuable of all talents is that of never using two words when one will do.",
+    "author": "Thomas Jefferson",
+    "tags": [],
+    "verified": true,
+    "source": "Letter to Thomas Jefferson Randolph",
+    "year": 1808
+  },
+  {
+    "text": "It is easier to do a job right than to explain why you didn't.",
+    "author": "Martin Van Buren",
+    "tags": [],
+    "verified": false,
+    "note": "ATTRIBUTION DISPUTED. No primary source in Van Buren's papers."
+  },
+  {
+    "text": "Everyone has a plan until they get punched in the mouth.",
+    "author": "Mike Tyson",
+    "tags": [],
+    "verified": true
+  },
+  {
+    "text": "There is only one thing in the world worse than being talked about, and that is not being talked about.",
+    "author": "Oscar Wilde",
+    "tags": [],
+    "verified": true,
+    "source": "The Picture of Dorian Gray",
+    "year": 1890
+  },
+  {
+    "text": "We are all apprentices in a craft where no one ever becomes a master.",
+    "author": "Ernest Hemingway",
+    "tags": [],
+    "verified": false,
+    "note": "Attributed to Hemingway, widely. No primary source located."
+  },
+  {
+    "text": "Everyone thinks of changing the world, but no one thinks of changing himself.",
+    "author": "Leo Tolstoy",
+    "tags": [],
+    "verified": true,
+    "source": "Three Methods of Reform",
+    "year": 1900
+  },
+  {
+    "text": "It ain't what you don't know that gets you into trouble. It's what you know for sure that just ain't so.",
+    "author": "Mark Twain",
+    "tags": [],
+    "verified": false,
+    "note": "ATTRIBUTION DISPUTED. Not Twain — traces to Josh Billings. The Mark Twain Project lists it as unverified."
+  },
+  {
+    "text": "The cure for anything is salt water: sweat, tears, or the sea.",
+    "author": "Isak Dinesen",
+    "tags": [],
+    "verified": false,
+    "note": "Attributed to Dinesen; not located in Seven Gothic Tales or her letters."
+  },
+  {
+    "text": "Not everything that can be counted counts, and not everything that counts can be counted.",
+    "author": "William Bruce Cameron",
+    "tags": [],
+    "verified": true,
+    "source": "Informal Sociology",
+    "year": 1963
+  },
+  {
+    "text": "We suffer more often in imagination than in reality.",
+    "author": "Seneca",
+    "tags": [],
+    "verified": true,
+    "source": "Moral Letters to Lucilius"
+  },
+  {
+    "text": "It's only when the tide goes out that you learn who has been swimming naked.",
+    "author": "Warren Buffett",
+    "tags": [],
+    "verified": true,
+    "source": "Berkshire Hathaway shareholder letter",
+    "year": 2001
+  },
+  {
+    "text": "Either write something worth reading or do something worth writing.",
+    "author": "Benjamin Franklin",
+    "tags": [],
+    "verified": true,
+    "source": "Poor Richard's Almanack",
+    "year": 1738
+  },
+  {
+    "text": "Show me the incentive and I will show you the outcome.",
+    "author": "Charlie Munger",
+    "tags": [],
+    "verified": true,
+    "source": "The Psychology of Human Misjudgment",
+    "year": 1995
+  },
+  {
+    "text": "The best victory is that which requires no battle.",
+    "author": "Sun Tzu",
+    "tags": [],
+    "verified": true,
+    "source": "The Art of War"
+  },
+  {
+    "text": "The medium is the message.",
+    "author": "Marshall McLuhan",
+    "tags": [],
+    "verified": true,
+    "source": "Understanding Media",
+    "year": 1964
+  },
+  {
+    "text": "Do what you can, with what you have, where you are.",
+    "author": "Theodore Roosevelt",
+    "tags": [],
+    "verified": false,
+    "note": "Roosevelt quoted it in his Autobiography (1913), crediting Squire Bill Widener. Not original to him."
+  },
+  {
+    "text": "It does not matter how slowly you go as long as you do not stop.",
+    "author": "Confucius",
+    "tags": [],
+    "verified": false,
+    "note": "ATTRIBUTION DISPUTED. Not in the Analects. Modern Western invention."
+  },
+  {
+    "text": "Positive anything is better than negative nothing.",
+    "author": "Elbert Hubbard",
+    "tags": [],
+    "verified": false
   }
 ]
