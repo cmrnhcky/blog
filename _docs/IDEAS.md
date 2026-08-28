@@ -191,6 +191,8 @@ You have one. The site's design is finished and its rooms are empty, which makes
 louder rather than quieter. A rough 300-word list published beats a perfect essay unpublished, and
 the archive does not remember which was which.
 
-Four templates are waiting in `src/content/saying/` — `template-endorsement.md`,
-`template-greater-than.md`, `template-list.md`, `template-plain.md`. They are `draft: true`, so they
-are invisible on the site. Copy one, rename it, write, flip the flag.
+Six templates are waiting in `src/content/saying/`, one per topic — `template-drink.md`,
+`template-style.md`, `template-money.md`, `template-fitness.md`, `template-fatherhood.md`,
+`template-sundries.md`. They are `draft: true`, so they are invisible on the built site but render
+in `npm run dev` at their real URLs, which is how you look at one. Copy, rename, write, flip the
+flag. The accent kit each of them demonstrates is catalogued in `PUBLISHING.md` § 2.

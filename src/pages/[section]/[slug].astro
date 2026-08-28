@@ -12,8 +12,12 @@ import { formatDate } from '../../lib/dates';
 import QuoteRail from '../../components/QuoteRail.astro';
 import EmailCapture from '../../components/EmailCapture.astro';
 
+/* Drafts build in `npm run dev` ONLY, so a template can be looked at in
+   its real layout at its real URL. `astro build` still drops them, so
+   nothing here can reach the deploy. They stay out of every index, feed
+   and issue number either way — this is the one page that shows them. */
 export async function getStaticPaths() {
-  const posts = await getCollection('saying', ({ data }) => !data.draft);
+  const posts = await getCollection('saying', ({ data }) => !data.draft || import.meta.env.DEV);
   return posts.map(post => ({
     params: { section: post.data.topic, slug: post.id },
     props: { post },
@@ -57,6 +61,10 @@ const dateFormatted = formatDate(post.data.date);
       )}
 
       {post.data.ritual && <p class="ritual-stamp">{post.data.ritual}</p>}
+
+      {import.meta.env.DEV && post.data.draft && (
+        <p class="draft-flag">Draft &middot; visible in dev only &middot; set <code>draft: false</code> to publish</p>
+      )}
 
       <div class="prose prose--feature">
         <Content />

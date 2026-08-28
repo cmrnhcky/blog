@@ -178,23 +178,66 @@ not as taste.
 
 ## 2. Articles — the writing
 
-**Start from a template, not a blank file.** Four sit in `src/content/saying/`, one per form:
+**Start from a template, not a blank file.** Six sit in `src/content/saying/`, one per topic —
+and between them they cover all three forms plus the no-form escape hatch:
 
-| File | Form |
-|---|---|
-| `template-endorsement.md` | one thing, why it's worth it, ends on a verdict |
-| `template-greater-than.md` | this, not that — argued to a conclusion |
-| `template-list.md` | ranked, numbered, no explanation owed |
-| `template-plain.md` | no form at all — the escape hatch |
+| File | Topic · form | The accents it teaches |
+|---|---|---|
+| `template-drink.md` | Drink · Lists | ranked list, pull quote, endnote |
+| `template-style.md` | Style · Endorsements | The File, verdict stamp, pull quote |
+| `template-money.md` | Money · Greater Than | versus table, stat row, hanging blockquote |
+| `template-fitness.md` | Fitness · — | sidenote marginalia, stat row, dinkus |
+| `template-fatherhood.md` | Fatherhood · — | restraint: drop cap, lede, one pull quote |
+| `template-sundries.md` | Sundries · — | stat row, dinkus, in-body figure, endnote |
 
-Each carries the shape of its form in comments at the top and marks every slot with `▶`. They are
-`draft: true`, so they never appear on the site, in the RSS feed, or in the issue numbering.
+Each carries the rules of its topic and form in comments at the top, marks every slot with `▶`,
+and demonstrates a different part of the accent kit. All six are `draft: true`, so they never
+appear on the site, in the RSS feed, or in the issue numbering.
+
+**To look at one:** run `npm run dev` and open it at its real URL —
+`localhost:4321/drink/template-drink`, `/style/template-style`, and so on. Drafts render in dev
+only; `npm run build` still drops them, so a template cannot reach the deploy by accident. An
+unpublished piece carries a dashed red flag under its dateline so there is no mistaking it.
 
 ```bash
-cp src/content/saying/template-list.md src/content/saying/seven-bottles-under-25.md
+cp src/content/saying/template-drink.md src/content/saying/seven-bottles-under-25.md
 ```
 
 Then write, delete the comment blocks, make sure no `▶` survives, and set `draft: false`.
+
+### The accent kit
+
+All of it is plain HTML pasted into the `.md` file — Astro passes HTML through markdown
+untouched, so there is no MDX, no imports and no build step. The CSS lives in one commented block
+at the foot of `src/styles/global.css` under **ARTICLE ACCENTS**; the templates are the working
+copies to steal from.
+
+| Accent | Markup | Use it for |
+|---|---|---|
+| Drop cap | automatic | first paragraph of every article |
+| Lede | `<span class="lede">` | the first three-to-five words. Only with the cap |
+| Pull quote | `<div class="pq">` | a line already in the piece, set large |
+| Sidenote | `<aside class="sidenote">` | marginalia. Floats into the margin ≥1180px, inline below |
+| The File | `<div class="file">` | the spec box for an Endorsement |
+| Verdict | `<div class="verdict">` | the stamp. Oxblood, once per page |
+| Ranked list | `<ol class="ranked">` | the Lists form |
+| Versus | `<div class="versus">` | the Greater Than form |
+| Stat row | `<div class="stats">` | two to four numbers, set large |
+| Figure | `<figure>` | an image inside the prose |
+| Blockquote | markdown `>` | someone else's words. Hanging quote mark |
+| Dinkus | `<div class="dinkus">` | a section break |
+| Endnote | `<p class="endnote">` | disclosure, method, where the numbers came from |
+
+Three house rules, and they are what keep six articles looking like one magazine:
+
+1. **One accent per screenful.** Two is a layout, three is a mess.
+2. **The oxblood appears once per page.** It is the verdict and nothing else.
+3. **Nothing invents a size, a colour or a gap.** Every value in the kit is a token.
+
+A sidenote must read correctly whether it lands in the margin or inline — never write "see left."
+
+The four older form-only templates were superseded by these and now sit in `_src/article-forms/`
+as prose-craft notes. They are out of the content collection, so they build nothing.
 
 **For what to write about**, see `IDEAS.md` — the recycling pipeline from your existing posts,
 where to pull from, and thirty-six starts mapped to topic and form.

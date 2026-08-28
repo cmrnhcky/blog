@@ -4,14 +4,11 @@ Written at the end of a quotes session, for whoever picks up the music work next
 
 ## Do not deploy
 
-**Netlify credits are out.** Six commits are sitting on local `main`, unpushed:
+**Netlify credits are out.** A stack of commits is sitting on local `main`, unpushed. Don't
+maintain the list by hand — read it:
 
-```
-b5db22e  Reorganise onto the site/-only-deploys layout
-63c8e7b  Add four article templates and IDEAS.md
-387a019  Handoff note for the music session
-dce68e8  Rename the master sheet to quotes-database.csv
-4275a65  Quotes: make the spreadsheet the master source
+```bash
+git log --oneline origin/main..main
 ```
 
 Keep committing locally. Do not `git push` — that is what triggers a Netlify build. One push

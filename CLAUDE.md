@@ -83,7 +83,12 @@ Renaming is a one-line edit.
 - **This is the personal brand, not the agency.** No Hickey Avenue LLC content, and never
   "Hickey Co." — that name has no legal existence and belongs in no public copy anywhere.
 - `draft: true` is honoured by every consumer — pages, RSS, and issue numbering. That is what makes
-  the four `template-*.md` files in `src/content/saying/` safe to keep in the content folder.
+  the six `template-*.md` files in `src/content/saying/` safe to keep in the content folder. The
+  one deliberate exception: `[section]/[slug].astro` builds drafts under `import.meta.env.DEV`, so
+  a template can be looked at in its real layout. `astro build` still drops them.
+- **Article accents are hand-written HTML inside the `.md`**, not components. The CSS is one block
+  at the foot of `global.css` (`ARTICLE ACCENTS`); the catalogue is `_docs/PUBLISHING.md` § 2. Any
+  accent that is a `<p>` needs a `.prose` prefix or `.prose p` outranks it.
 - `src/data/quotes.json` is **derived**. Edit the spreadsheet, run the importer. Hand-editing it
   broke the build once already.
 - Redirects live in `public/_redirects` only, never in `astro.config.mjs` — see the comment there.
