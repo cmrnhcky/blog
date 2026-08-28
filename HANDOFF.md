@@ -7,7 +7,7 @@ Written at the end of a quotes session, for whoever picks up the music work next
 **Netlify credits are out.** Six commits are sitting on local `main`, unpushed:
 
 ```
-<new>    Reorganise onto the site/-only-deploys layout
+b5db22e  Reorganise onto the site/-only-deploys layout
 63c8e7b  Add four article templates and IDEAS.md
 387a019  Handoff note for the music session
 dce68e8  Rename the master sheet to quotes-database.csv
