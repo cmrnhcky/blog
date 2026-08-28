@@ -44,44 +44,34 @@ Netlify rebuilds automatically. Live in about a minute at **https://cmrnhcky.com
 
 ## 1. Quotes — the ambient layer
 
-**Never open `src/data/quotes.json` by hand.** It is a machine file. One missing comma or one extra
-bracket and the whole site stops building. Everything below goes through the importer instead.
+**The spreadsheet is the master.** `quotes database.csv`, in the project root, is the source of
+truth. `src/data/quotes.json` is derived from it and should never be opened by hand — one missing
+comma and the site stops building.
 
-### The whole process, start to finish
+### Your loop, every time
 
-**1. Write them in the Google Sheet.** One quote per row, column A. Attribution however it comes out
-— same cell, next row, doesn't matter. All of these work:
+**1. Open "quotes database" in Google Sheets. Add a row.** One quote per row, column A:
 
 ```
-The truth is rarely pure and never simple. — Oscar Wilde
-"Just win, baby"
-- Al Davis
-"The best way to predict the future is to create it." —Peter Drucker
-Price is nothing. Value is everything.
+"Quote text." - Author | Work | Year
 ```
 
-The last one has no author, which makes it a **phrase** — your voice, no attribution line. That is
-the point of leaving the author off, not an omission to fix later.
+Only the quote is required. Trailing empty pipes are fine — `- Oscar Wilde |` reads the same as
+`- Oscar Wilde`. **A row with no author becomes a phrase**: your own line, printed with no
+attribution. That is a feature, not an unfinished row.
 
-**2. Download it.** In Sheets: **File → Download → Comma-separated values (.csv)**. It lands in
-`~/Downloads` with a name like `Untitled spreadsheet - Sheet1.csv`.
+**2. File → Download → Comma-separated values (.csv).**
 
-**3. Preview what it will do.** From the project folder:
+**3. Move it into the project folder, replacing the old one.** Keep the name starting with
+`quotes` — the importer picks up the newest `quotes*.csv` on its own, so there is no path to type.
+
+**4. Sync:**
 
 ```bash
-npm run quotes:import -- "~/Downloads/Untitled spreadsheet - Sheet1.csv" --dry
+npm run quotes:import
 ```
 
-`--dry` writes nothing. It prints every quote it found, who it thinks said it, and which slot the
-line is short enough for. Read that list. If an author looks wrong, fix the sheet and run it again.
-
-**4. Run it for real** — same command, drop `--dry`:
-
-```bash
-npm run quotes:import -- "~/Downloads/Untitled spreadsheet - Sheet1.csv"
-```
-
-**5. Check it builds, then ship:**
+**5. Build and ship:**
 
 ```bash
 npm run build
@@ -91,23 +81,38 @@ npm run build
 git add -A && git commit -m "quotes" && git push
 ```
 
-Live in about a minute.
+### Preview first when the change is big
 
-### The sheet is the source, so never delete rows from it
+```bash
+npm run quotes:import -- --dry
+```
 
-Re-importing the same file is safe — anything already in the library is skipped by text, and the
-count of duplicates is printed. So the working habit is: **keep adding to the one sheet, re-download
-it, re-run the import.** You never have to track which quotes you already loaded.
+Writes nothing. Prints every new quote, who it thinks said it, and which slot it fits.
 
-### What the importer cleans up for you
+### Removing a quote
 
-Curly quotes, `―` from Goodreads, en dashes, wrapping quote marks, `(1475-1564)` lifespans, an
-attribution that drifted into column E, and a dash with no space after it. None of that is your job.
+Deleting a row from the sheet does **not** delete it from the site. The importer lists what is in
+the library but no longer in the sheet, and keeps it. This is deliberate: a short download or a
+wrong export would otherwise wipe the library in one keystroke.
+
+When the list is genuinely what you meant to remove:
+
+```bash
+npm run quotes:import -- --prune
+```
+
+### What the sheet does NOT hold
+
+`verified`, `note` and `tags` are editorial and live only in `quotes.json`. A sync matches on the
+quote text and carries them across, so re-importing never costs you a verification or a
+disputed-attribution note.
+
+**One consequence worth knowing:** the text *is* the identity. Fix a typo in the sheet and it reads
+as a new quote — the old wording shows up as an orphan in the report. Prune it and you are done.
 
 ### What to record — keep it to text and author
 
-Source and year are optional and mostly not worth chasing. Here is exactly where each field
-actually appears on the site:
+Source and year are optional. Here is exactly where each field appears on the site:
 
 | Field | Where it renders |
 |---|---|
@@ -116,25 +121,28 @@ actually appears on the site:
 | `source` | the margins, and the full-bleed band |
 | `year` | the full-bleed band only |
 
-So `year` earns its keep in one slot out of three. For a proverb or a saying with no clean date,
-leave it out — the line still runs everywhere it is short enough to fit.
+`year` earns its keep in one slot out of three. For a proverb or a saying with no clean date, leave
+it out. The line still runs everywhere it is short enough to fit.
 
-Add `| Source | Year` after the author only when you happen to know it:
-
-```
-We are all in the gutter... — Oscar Wilde | Lady Windermere's Fan | 1892
-```
+For proverbs, put the tradition in the author column — `- Irish Proverb`. There is no person to
+misattribute, so it counts as sound attribution.
 
 ### `verified` — not your field
 
 A quotation must be `verified` to appear in the **full-bleed interstitial band**. Unverified ones
 still run in the drifting line and the margins, so nothing is lost by leaving it alone.
 
-The importer sets `verified: false` on everything, deliberately. It gets flipped only when someone
-has actually found the source. This exists because a misattributed quote on a site about
-discernment is the one error a reader remembers — and roughly a quarter of what circulates online
-is misattributed. The library currently carries ten flagged as disputed, including the Twain, the
-Jefferson and the Confucius, each with a private `note` explaining why. Notes never render.
+The importer sets `verified: false` on everything new, deliberately. It is flipped only when
+someone has actually found the source. A misattributed quote on a site about discernment is the one
+error a reader remembers — and a good quarter of what circulates online is misattributed. The
+library carries several flagged as disputed, each with a private `note` saying why. Notes never
+render.
+
+### What the importer cleans up for you
+
+Curly quotes, `―` from Goodreads, en dashes, wrapping quote marks, `(1475-1564)` lifespans, a
+trailing period on the year, a dash with no space after it, an attribution that drifted into
+column E, and the `<...>` format legend at the top of the sheet. None of that is your job.
 
 ### Where they show up — decided by length, automatically
 
@@ -149,20 +157,20 @@ Jefferson and the Confucius, each with a private `note` explaining why. Notes ne
 
 ### If it breaks anyway
 
-If `quotes.json` ever gets edited by hand and stops parsing, the importer refuses to run rather than
-making it worse, and tells you the fix:
+If `quotes.json` ever gets hand-edited and stops parsing, the importer refuses to run rather than
+making it worse:
 
 ```bash
 git checkout src/data/quotes.json
 ```
 
-That discards the hand edits and restores the last version that worked. Nothing published is lost —
-only uncommitted changes.
+That restores the last version that worked. Then re-run the import.
 
 ### Aim for ~40, and spread the authors
 
-Around forty is where the layer starts feeling ambient rather than repetitive. Spread them — one
-author dominating reads as one book read once, not as taste. Anything over a third is too much.
+Around forty is where the layer reads as ambient rather than repetitive. The importer prints author
+concentration every run and warns past a third — one author dominating reads as one book read once,
+not as taste.
 
 ---
 

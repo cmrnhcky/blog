@@ -1,5 +1,17 @@
 [
   {
+    "text": "The truth is rarely pure and never simple.",
+    "author": "Oscar Wilde",
+    "source": "The Importance of Being Earnest",
+    "year": 1895,
+    "tags": [],
+    "verified": true
+  },
+  {
+    "text": "Price is nothing. Value is everything.",
+    "tags": []
+  },
+  {
     "text": "Be yourself; everyone else is already taken.",
     "author": "Oscar Wilde",
     "tags": [
@@ -12,7 +24,7 @@
   {
     "text": "We are all in the gutter, but some of us are looking at the stars.",
     "author": "Oscar Wilde",
-    "source": "Lady Windermere's Fan, Act III",
+    "source": "Lady Windermere's Fan",
     "year": 1892,
     "tags": [
       "hope"
@@ -20,9 +32,17 @@
     "verified": true
   },
   {
-    "text": "A cynic is a man who knows the price of everything and the value of nothing.",
+    "text": "To live is the rarest thing in the world. Most people exist, that is all.",
     "author": "Oscar Wilde",
-    "source": "Lady Windermere's Fan, Act III",
+    "tags": [],
+    "verified": true,
+    "source": "The Soul of Man Under Socialism",
+    "year": 1891
+  },
+  {
+    "text": "A cynic is a man who knows the price of everything and the value of nothing",
+    "author": "Oscar Wilde",
+    "source": "Lady Windermere's Fan",
     "year": 1892,
     "tags": [
       "value",
@@ -31,55 +51,36 @@
     "verified": true
   },
   {
-    "text": "The truth is rarely pure and never simple.",
-    "author": "Oscar Wilde",
-    "source": "The Importance of Being Earnest, Act I",
-    "year": 1895,
+    "text": "Well done is better than well said.",
+    "author": "Benjamin Franklin",
+    "source": "Poor Richard's Almanack",
+    "year": 1737,
     "tags": [],
     "verified": true
   },
   {
-    "text": "Price is nothing. Value is everything.",
-    "tags": []
-  },
-  {
-    "text": "Well done is better than well said.",
-    "author": "Benjamin Franklin",
-    "year": 1737,
-    "tags": [],
-    "verified": true,
-    "source": "Poor Richard's Almanack"
-  },
-  {
-    "text": "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.",
-    "author": "Ralph Waldo Emerson",
-    "tags": [],
-    "verified": false,
-    "note": "ATTRIBUTION DISPUTED. Universally credited to Emerson; not found in his published works. Also circulates as e.e. cummings. No primary source."
-  },
-  {
     "text": "Live in the sunshine, swim the sea, drink the wild air.",
     "author": "Ralph Waldo Emerson",
-    "tags": [],
-    "verified": true,
     "source": "Merlin's Song",
-    "year": 1867
+    "year": 1867,
+    "tags": [],
+    "verified": true
   },
   {
     "text": "What you do speaks so loudly that I cannot hear what you say.",
     "author": "Ralph Waldo Emerson",
-    "tags": [],
-    "verified": true,
     "source": "Social Aims",
-    "year": 1876
+    "year": 1876,
+    "tags": [],
+    "verified": true
   },
   {
     "text": "Nothing great was ever achieved without enthusiasm.",
     "author": "Ralph Waldo Emerson",
-    "tags": [],
-    "verified": true,
     "source": "Circles, Essays: First Series",
-    "year": 1841
+    "year": 1841,
+    "tags": [],
+    "verified": true
   },
   {
     "text": "The greater danger for most of us lies not in setting our aim too high and falling short, but in setting our aim too low, and achieving our mark.",
@@ -96,57 +97,36 @@
     "note": "Attributed to Berra, but also to Van de Snepscheut and others. No primary source."
   },
   {
-    "text": "I find that the harder I work, the more luck I seem to have.",
-    "author": "Thomas Jefferson",
-    "tags": [],
-    "verified": false,
-    "note": "ATTRIBUTION DISPUTED. The Jefferson Foundation lists this as spurious — not found in his papers. Older versions run to Coleman Cox (1922)."
-  },
-  {
-    "text": "Never interrupt your enemy when he is making a mistake.",
-    "author": "Napoleon Bonaparte",
-    "tags": [],
-    "verified": false,
-    "note": "ATTRIBUTION DISPUTED. Universally credited to Napoleon; no primary source in his correspondence."
-  },
-  {
     "text": "Let us never negotiate out of fear. But let us never fear to negotiate.",
     "author": "John F. Kennedy",
+    "source": "Inaugural Address",
     "year": 1961,
     "tags": [],
-    "verified": true,
-    "source": "Inaugural Address"
-  },
-  {
-    "text": "History doesn't repeat itself, but it does rhyme.",
-    "author": "Mark Twain",
-    "tags": [],
-    "verified": false,
-    "note": "ATTRIBUTION DISPUTED. Not found in Twain. The Mark Twain Project lists it as unverified."
+    "verified": true
   },
   {
     "text": "And, when you want something, all the universe conspires in helping you to achieve it.",
     "author": "Paulo Coelho",
     "source": "The Alchemist",
+    "year": 1988,
     "tags": [],
-    "verified": true,
-    "year": 1988
+    "verified": true
   },
   {
     "text": "The fool doth think he is wise, but the wise man knows himself to be a fool.",
     "author": "William Shakespeare",
-    "source": "As You Like It, Act V",
+    "source": "As You Like It",
+    "year": 1600,
     "tags": [],
-    "verified": true,
-    "year": 1600
+    "verified": true
   },
   {
     "text": "Every life is in many days, day after day. We walk through ourselves, meeting robbers, ghosts, giants, old men, young men, wives, widows, brothers-in-love, but always meeting ourselves.",
     "author": "James Joyce",
     "source": "Ulysses",
+    "year": 1922,
     "tags": [],
-    "verified": true,
-    "year": 1922
+    "verified": true
   },
   {
     "text": "You miss 100% of the shots you don't take.",
@@ -155,23 +135,16 @@
     "verified": true
   },
   {
-    "text": "The best way to predict the future is to create it.",
-    "author": "Peter Drucker",
-    "tags": [],
-    "verified": false,
-    "note": "ATTRIBUTION DISPUTED. The sourced version is Alan Kay, 1971: \"The best way to predict the future is to invent it.\" Drucker attribution has no primary source."
-  },
-  {
     "text": "You either die a hero or live long enough to see yourself become the villain.",
     "author": "Harvey Dent",
-    "tags": [],
-    "verified": true,
     "source": "The Dark Knight",
     "year": 2008,
+    "tags": [],
+    "verified": true,
     "note": "Fictional — screenplay by Jonathan and Christopher Nolan. Attributed to the character, which is the honest way to run it."
   },
   {
-    "text": "Just win, baby",
+    "text": "Just win, baby!",
     "author": "Al Davis",
     "tags": [],
     "verified": true
@@ -179,6 +152,7 @@
   {
     "text": "Perhaps one did not want to be loved so much as to be understood.",
     "author": "George Orwell",
+    "source": "1984",
     "year": 1949,
     "tags": [],
     "verified": true
@@ -193,10 +167,10 @@
   {
     "text": "The most valuable of all talents is that of never using two words when one will do.",
     "author": "Thomas Jefferson",
-    "tags": [],
-    "verified": true,
     "source": "Letter to Thomas Jefferson Randolph",
-    "year": 1808
+    "year": 1808,
+    "tags": [],
+    "verified": true
   },
   {
     "text": "It is easier to do a job right than to explain why you didn't.",
@@ -214,10 +188,10 @@
   {
     "text": "There is only one thing in the world worse than being talked about, and that is not being talked about.",
     "author": "Oscar Wilde",
-    "tags": [],
-    "verified": true,
     "source": "The Picture of Dorian Gray",
-    "year": 1890
+    "year": 1890,
+    "tags": [],
+    "verified": true
   },
   {
     "text": "We are all apprentices in a craft where no one ever becomes a master.",
@@ -229,10 +203,10 @@
   {
     "text": "Everyone thinks of changing the world, but no one thinks of changing himself.",
     "author": "Leo Tolstoy",
-    "tags": [],
-    "verified": true,
     "source": "Three Methods of Reform",
-    "year": 1900
+    "year": 1900,
+    "tags": [],
+    "verified": true
   },
   {
     "text": "It ain't what you don't know that gets you into trouble. It's what you know for sure that just ain't so.",
@@ -251,56 +225,56 @@
   {
     "text": "Not everything that can be counted counts, and not everything that counts can be counted.",
     "author": "William Bruce Cameron",
-    "tags": [],
-    "verified": true,
     "source": "Informal Sociology",
-    "year": 1963
+    "year": 1963,
+    "tags": [],
+    "verified": true
   },
   {
     "text": "We suffer more often in imagination than in reality.",
     "author": "Seneca",
+    "source": "Moral Letters to Lucilius",
     "tags": [],
-    "verified": true,
-    "source": "Moral Letters to Lucilius"
+    "verified": true
   },
   {
     "text": "It's only when the tide goes out that you learn who has been swimming naked.",
     "author": "Warren Buffett",
-    "tags": [],
-    "verified": true,
     "source": "Berkshire Hathaway shareholder letter",
-    "year": 2001
+    "year": 2001,
+    "tags": [],
+    "verified": true
   },
   {
     "text": "Either write something worth reading or do something worth writing.",
     "author": "Benjamin Franklin",
-    "tags": [],
-    "verified": true,
     "source": "Poor Richard's Almanack",
-    "year": 1738
+    "year": 1738,
+    "tags": [],
+    "verified": true
   },
   {
     "text": "Show me the incentive and I will show you the outcome.",
     "author": "Charlie Munger",
-    "tags": [],
-    "verified": true,
     "source": "The Psychology of Human Misjudgment",
-    "year": 1995
+    "year": 1995,
+    "tags": [],
+    "verified": true
   },
   {
     "text": "The best victory is that which requires no battle.",
     "author": "Sun Tzu",
+    "source": "The Art of War",
     "tags": [],
-    "verified": true,
-    "source": "The Art of War"
+    "verified": true
   },
   {
     "text": "The medium is the message.",
     "author": "Marshall McLuhan",
-    "tags": [],
-    "verified": true,
     "source": "Understanding Media",
-    "year": 1964
+    "year": 1964,
+    "tags": [],
+    "verified": true
   },
   {
     "text": "Do what you can, with what you have, where you are.",
@@ -308,6 +282,13 @@
     "tags": [],
     "verified": false,
     "note": "Roosevelt quoted it in his Autobiography (1913), crediting Squire Bill Widener. Not original to him."
+  },
+  {
+    "text": "The best way to predict your future is to create it.",
+    "author": "Abraham Lincoln",
+    "tags": [],
+    "verified": false,
+    "note": "ATTRIBUTION DISPUTED. Lincoln never said it. The sourced version is Alan Kay, 1971: \"The best way to predict the future is to invent it.\""
   },
   {
     "text": "It does not matter how slowly you go as long as you do not stop.",
@@ -321,5 +302,35 @@
     "author": "Elbert Hubbard",
     "tags": [],
     "verified": false
+  },
+  {
+    "text": "Here's to a long life and a merry one. A quick death and an easy one. A pretty girl and an honest one. A cold pint and another one!",
+    "author": "Irish Proverb",
+    "tags": [],
+    "verified": true
+  },
+  {
+    "text": "May you live as long as you want, and never want as long as you live.",
+    "author": "Irish Proverb",
+    "tags": [],
+    "verified": true
+  },
+  {
+    "text": "I complained that I had no shoes until I met a man who had no feet.",
+    "author": "Irish Proverb",
+    "tags": [],
+    "verified": true
+  },
+  {
+    "text": "You've got to do your own growing, no matter how tall your father was.",
+    "author": "Irish Proverb",
+    "tags": [],
+    "verified": true
+  },
+  {
+    "text": "You'll never plough a field by turning it over in your mind.",
+    "author": "Irish Proverb",
+    "tags": [],
+    "verified": true
   }
 ]
