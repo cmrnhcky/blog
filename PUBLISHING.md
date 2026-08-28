@@ -176,6 +176,28 @@ not as taste.
 
 ## 2. Articles — the writing
 
+**Start from a template, not a blank file.** Four sit in `src/content/saying/`, one per form:
+
+| File | Form |
+|---|---|
+| `template-endorsement.md` | one thing, why it's worth it, ends on a verdict |
+| `template-greater-than.md` | this, not that — argued to a conclusion |
+| `template-list.md` | ranked, numbered, no explanation owed |
+| `template-plain.md` | no form at all — the escape hatch |
+
+Each carries the shape of its form in comments at the top and marks every slot with `▶`. They are
+`draft: true`, so they never appear on the site, in the RSS feed, or in the issue numbering.
+
+```bash
+cp src/content/saying/template-list.md src/content/saying/seven-bottles-under-25.md
+```
+
+Then write, delete the comment blocks, make sure no `▶` survives, and set `draft: false`.
+
+**For what to write about**, see `IDEAS.md` — the recycling pipeline from your existing posts,
+where to pull from, and thirty-six starts mapped to topic and form.
+
+
 **File:** `src/content/saying/whatever-you-want.md`
 
 The filename becomes the URL: `evan-williams.md` → `cmrnhcky.com/drink/evan-williams`.
