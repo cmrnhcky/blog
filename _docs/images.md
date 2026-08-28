@@ -6,4 +6,4 @@ Drop files here, reference them by the path *after* `public/`.
     public/images/articles/evan.jpg       →   image: "/images/articles/evan.jpg"
 
 Anything in `public/` is served as-is and is NOT resized or compressed by the
-build — so resize before you commit. See PUBLISHING.md → "Images".
+build — so resize before you commit. See `_docs/PUBLISHING.md` → "Images".

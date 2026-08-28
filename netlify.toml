@@ -1,0 +1,13 @@
+# Deploy config, version-controlled so the publish root cannot drift.
+#
+# `publish` MUST stay "site". It was "dist", set through the Netlify UI, which
+# meant the deployed folder was invisible from the repo. A netlify.toml at the
+# project root overrides the UI, so the publish root is now reviewable in a diff.
+#
+# Never point this at the project root. A sibling site had its repo root
+# published once and served .git/config, .git/index and every internal doc in
+# its history. The folder split is the mechanism; redirects are only a net.
+
+[build]
+  command = "npm run build"
+  publish = "site"

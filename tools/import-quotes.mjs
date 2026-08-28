@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* ────────────────────────────────────────────────────────────────
-   quotes-database.csv  →  src/data/quotes.json
+   _src/quotes-database.csv  →  src/data/quotes.json
 
      npm run quotes:import              (sync from the sheet)
      npm run quotes:import -- --dry     (preview, writes nothing)
@@ -11,9 +11,11 @@
    and the site stops building.
 
    Cameron's process: open "quotes database" in Google Sheets, add a
-   row, File → Download → CSV, drop it in this folder replacing the
-   old one, run the command. No filename to type: the newest
-   quotes*.csv in the project root is picked up automatically.
+   row, File → Download → CSV, drop it in `_src/` replacing the old
+   one, run the command. No filename to type: the newest quotes*.csv
+   is picked up automatically. `_src/` is where it belongs, but the
+   project root is scanned too, so a download dropped one level up
+   still works. Neither folder deploys — only `site/` does.
 
    ── The row format ──────────────────────────────────────────────
 
@@ -55,6 +57,10 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT    = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const LIBRARY = resolve(ROOT, 'src/data/quotes.json');
+/* The master lives in _src/. The project root is scanned as a fallback so a
+   download dropped one folder short is still found rather than silently
+   ignored — an ignored sheet looks exactly like a sheet with no new rows. */
+const SHEET_DIRS = ['_src', '.'];
 
 const argv  = process.argv.slice(2);
 const dry   = argv.includes('--dry');
@@ -64,16 +70,21 @@ const given = argv.find(a => !a.startsWith('--'));
 /* ── Find the sheet ──────────────────────────────────────────── */
 async function resolveSheet() {
   if (given) return given.startsWith('~') ? given.replace('~', homedir()) : given;
-  const files = (await readdir(ROOT)).filter(f => /^quotes.*\.csv$/i.test(f));
-  if (!files.length) {
-    console.error(`No quotes*.csv in ${ROOT}.`);
-    console.error(`Download the sheet as CSV and drop it here, or pass a path.`);
+  const found = [];
+  for (const dir of SHEET_DIRS) {
+    let names = [];
+    try { names = await readdir(resolve(ROOT, dir)); } catch { continue; }
+    for (const f of names.filter(n => /^quotes.*\.csv$/i.test(n))) {
+      const path = resolve(ROOT, dir, f);
+      found.push({ path, t: (await stat(path)).mtimeMs });
+    }
+  }
+  if (!found.length) {
+    console.error(`No quotes*.csv in ${resolve(ROOT, '_src')}.`);
+    console.error(`Download the sheet as CSV and drop it there, or pass a path.`);
     process.exit(1);
   }
-  const withTime = await Promise.all(
-    files.map(async f => ({ f, t: (await stat(resolve(ROOT, f))).mtimeMs }))
-  );
-  return resolve(ROOT, withTime.sort((a, b) => b.t - a.t)[0].f);
+  return found.sort((a, b) => b.t - a.t)[0].path;
 }
 
 /* ── Cleanup ─────────────────────────────────────────────────── */

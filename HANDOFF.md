@@ -4,27 +4,59 @@ Written at the end of a quotes session, for whoever picks up the music work next
 
 ## Do not deploy
 
-**Netlify credits are out.** Two commits are sitting on local `main`, unpushed:
+**Netlify credits are out.** Six commits are sitting on local `main`, unpushed:
 
 ```
+<new>    Reorganise onto the site/-only-deploys layout
+63c8e7b  Add four article templates and IDEAS.md
+387a019  Handoff note for the music session
 dce68e8  Rename the master sheet to quotes-database.csv
 4275a65  Quotes: make the spreadsheet the master source
 ```
 
 Keep committing locally. Do not `git push` — that is what triggers a Netlify build. One push
-ships both commits when credits are back.
+ships all of them when credits are back.
+
+### Read this before that first push
+
+The build output moved from `dist/` to `site/`, and `netlify.toml` at the project root now pins
+`publish = "site"`. That file **overrides** the publish directory set in the Netlify UI, which
+still says `dist`. So the first build after the push is the one that proves it. If it fails with
+"publish directory does not exist," the toml was not picked up — check that Netlify's *base
+directory* is the repo root and not a subfolder.
+
+While you are in those settings: the UI also holds four stale redirects
+(`/ledger → /guessing`, `/writing → /saying`, and two others) pointing at pages that no longer
+exist. `public/_redirects` has the correct rules and is processed first, so nothing is broken —
+but the UI copies are dead weight and should be deleted.
+
+## The folder moved
+
+The project is now at `~/Desktop/Claude/Projects/CMRNHCKY`. It was under `~/Documents/` and moved
+mid-session on 2026-08-28. Anything holding the old path — shell aliases, the Netlify CLI link in
+`.netlify/state.json` — will need repointing.
+
+## Layout: `site/` is the only thing that deploys
+
+Done 2026-08-28. Docs went to `_docs/`, masters and retired assets to `_src/`, and the build now
+writes `site/` instead of `dist/`. The rule and the reasoning are in `CLAUDE.md`; read it before
+adding any file to `public/`, which is copied into the publish root byte for byte.
+
+Three internal files were live on cmrnhcky.com before this and are not any more:
+`/images/README.md`, `/og-default.svg` and `/.DS_Store`.
 
 ## Where quotes landed (done, no action needed)
 
-`quotes-database.csv` in the project root is now the **master source**; `src/data/quotes.json` is
+`_src/quotes-database.csv` is now the **master source**; `src/data/quotes.json` is
 derived from it and must never be hand-edited — that broke the build once already.
 
-`npm run quotes:import` syncs from the newest `quotes*.csv` in the root. It carries `verified`,
+`npm run quotes:import` syncs from the newest `quotes*.csv` in `_src/` (the project root is
+scanned too, as a fallback). It carries `verified`,
 `note` and `tags` across on quote text, reports rows that vanished from the sheet rather than
 deleting them, and needs `--prune` to actually remove. `--dry` previews.
 
 Library is at **45 quotes, 32 authors, Wilde at 13%** — past the ~40 threshold. Full process in
-`PUBLISHING.md` § 1.
+`_docs/PUBLISHING.md` § 1.
 
 ## Music — the actual state
 

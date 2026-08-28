@@ -72,8 +72,8 @@ Needs Node 18+. Currently running Node 24.16.0, npm 11.13.0.
 | Command | Does |
 |---|---|
 | `npm run dev` | Live-reloading local server on :4321 |
-| `npm run build` | Builds to `dist/`. **The safety net — run before every push.** |
-| `npm run preview` | Serves the built `dist/` to check the real output |
+| `npm run build` | Builds to `site/` — the publish root. **The safety net — run before every push.** |
+| `npm run preview` | Serves the built `site/` to check the real output |
 | `npm run astro -- --help` | Astro CLI |
 | `npm run music:import -- "<playlist url>"` | Adds a YouTube playlist's songs to the library |
 

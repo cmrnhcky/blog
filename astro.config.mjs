@@ -6,6 +6,12 @@ export default defineConfig({
   site: 'https://cmrnhcky.com',
   integrations: [sitemap()],
 
+  /* `site/` is the publish root and the ONLY folder that is ever deployed.
+     It holds build output only — Astro wipes it on every build. Never put a
+     hand-written file here; internal work goes to the project root, _docs/,
+     _src/ or _refs/. See CLAUDE.md. */
+  outDir: './site',
+
   /* Redirects live in public/_redirects, NOT here.
      Astro's `redirects` option generates a static meta-refresh page at each
      old path. Those return HTTP 200, so they shadow Netlify's _redirects

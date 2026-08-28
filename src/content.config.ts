@@ -18,7 +18,7 @@ const saying = defineCollection({
     featured: z.boolean().default(false),
     tags:     z.array(z.string()).default([]),
     ritual:   z.string().optional(),
-    /* Optional lead image. Path is relative to public/ — see PUBLISHING.md.
+    /* Optional lead image. Path is relative to public/ — see _docs/PUBLISHING.md.
        Doubles as the article's social preview when set. */
     image:        z.string().optional(),
     imageAlt:     z.string().optional(),

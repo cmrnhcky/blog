@@ -44,7 +44,7 @@ Netlify rebuilds automatically. Live in about a minute at **https://cmrnhcky.com
 
 ## 1. Quotes — the ambient layer
 
-**The spreadsheet is the master.** `quotes-database.csv`, in the project root, is the source of
+**The spreadsheet is the master.** `_src/quotes-database.csv` is the source of
 truth. `src/data/quotes.json` is derived from it and should never be opened by hand — one missing
 comma and the site stops building.
 
@@ -62,8 +62,10 @@ attribution. That is a feature, not an unfinished row.
 
 **2. File → Download → Comma-separated values (.csv).**
 
-**3. Move it into the project folder, replacing the old one.** Keep the name starting with
-`quotes` — the importer picks up the newest `quotes*.csv` on its own, so there is no path to type.
+**3. Move it into `_src/`, replacing the old one.** Keep the name starting with `quotes` — the
+importer picks up the newest `quotes*.csv` on its own, so there is no path to type. Drop it at the
+project root by mistake and it still works; `_src/` is just where the master lives. What you must
+never do is put it in `site/` — that folder is the public web root and is wiped on every build.
 
 **4. Sync:**
 

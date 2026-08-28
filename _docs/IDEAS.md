@@ -106,7 +106,7 @@ telling you what they want read.
 
 Ideas die between having them and being at a laptop. Two ways to stop that:
 
-**Add a row to a notes file the second you have it.** Same idea as `quotes-database.csv` — one
+**Add a row to a notes file the second you have it.** Same idea as `_src/quotes-database.csv` — one
 place, no formatting, no decisions. You already trust that pattern.
 
 **Use the mobile block for first drafts, by voice.** 2:30–3:30 is the standing slot and articles are
