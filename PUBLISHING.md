@@ -44,93 +44,125 @@ Netlify rebuilds automatically. Live in about a minute at **https://cmrnhcky.com
 
 ## 1. Quotes — the ambient layer
 
-**File:** `src/data/quotes.json`
+**Never open `src/data/quotes.json` by hand.** It is a machine file. One missing comma or one extra
+bracket and the whole site stops building. Everything below goes through the importer instead.
 
-One array. Add objects to it. That's the whole database.
+### The whole process, start to finish
 
-### Minimum
+**1. Write them in the Google Sheet.** One quote per row, column A. Attribution however it comes out
+— same cell, next row, doesn't matter. All of these work:
 
-```json
-{ "text": "The truth is rarely pure and never simple.", "author": "Oscar Wilde" }
+```
+The truth is rarely pure and never simple. — Oscar Wilde
+"Just win, baby"
+- Al Davis
+"The best way to predict the future is to create it." —Peter Drucker
+Price is nothing. Value is everything.
 ```
 
-### Your own lines — leave `author` out
+The last one has no author, which makes it a **phrase** — your voice, no attribution line. That is
+the point of leaving the author off, not an omission to fix later.
 
-No author makes it a **phrase**. Phrases set without an attribution line, in your voice, not
-someone else's. This is where "reasons why this is better than that" one-liners go.
+**2. Download it.** In Sheets: **File → Download → Comma-separated values (.csv)**. It lands in
+`~/Downloads` with a name like `Untitled spreadsheet - Sheet1.csv`.
 
-```json
-{ "text": "Price is nothing. Value is everything.", "tags": ["money"] }
+**3. Preview what it will do.** From the project folder:
+
+```bash
+npm run quotes:import -- "~/Downloads/Untitled spreadsheet - Sheet1.csv" --dry
 ```
 
-### Full shape
+`--dry` writes nothing. It prints every quote it found, who it thinks said it, and which slot the
+line is short enough for. Read that list. If an author looks wrong, fix the sheet and run it again.
 
-```json
-{
-  "text": "We are all in the gutter, but some of us are looking at the stars.",
-  "author": "Oscar Wilde",
-  "source": "Lady Windermere's Fan, Act III",
-  "year": 1892,
-  "tags": ["hope"],
-  "verified": true,
-  "note": "Private. Never rendered. Your working notes."
-}
+**4. Run it for real** — same command, drop `--dry`:
+
+```bash
+npm run quotes:import -- "~/Downloads/Untitled spreadsheet - Sheet1.csv"
 ```
 
-| Field | Required | What it does |
-|---|---|---|
-| `text` | **yes** | The line. Don't include surrounding quote marks — they're added. |
-| `author` | no | Present → quotation. Absent → phrase, no attribution shown. |
-| `source` | no | Play, book, album, interview |
-| `year` | no | Number, no quotes: `1892` |
-| `tags` | no | Free strings, lowercase |
-| `verified` | no | Defaults `false`. See below. |
-| `note` | no | Private, never rendered |
+**5. Check it builds, then ship:**
 
-### `verified` — the one that matters
+```bash
+npm run build
+```
 
-A quotation must be `"verified": true` to appear in a **prominent** slot (the big full-bleed
-interstitials). Unverified ones still appear in the margins, where the stakes are lower.
+```bash
+git add -A && git commit -m "quotes" && git push
+```
 
-This exists because a misattributed quote on a site about discernment is the one error a reader
-remembers. The seed data has a live example: **"Be yourself; everyone else is already taken"** is
-credited to Wilde everywhere and appears nowhere in his work. It's your motto and it ships
-`verified: false`.
+Live in about a minute.
 
-To verify: find the actual source, record it, flip the flag. If you can't find one — that's your
-answer. Run it as a phrase with no author, or cut it.
+### The sheet is the source, so never delete rows from it
+
+Re-importing the same file is safe — anything already in the library is skipped by text, and the
+count of duplicates is printed. So the working habit is: **keep adding to the one sheet, re-download
+it, re-run the import.** You never have to track which quotes you already loaded.
+
+### What the importer cleans up for you
+
+Curly quotes, `―` from Goodreads, en dashes, wrapping quote marks, `(1475-1564)` lifespans, an
+attribution that drifted into column E, and a dash with no space after it. None of that is your job.
+
+### What to record — keep it to text and author
+
+Source and year are optional and mostly not worth chasing. Here is exactly where each field
+actually appears on the site:
+
+| Field | Where it renders |
+|---|---|
+| `text` | everywhere |
+| `author` | everywhere |
+| `source` | the margins, and the full-bleed band |
+| `year` | the full-bleed band only |
+
+So `year` earns its keep in one slot out of three. For a proverb or a saying with no clean date,
+leave it out — the line still runs everywhere it is short enough to fit.
+
+Add `| Source | Year` after the author only when you happen to know it:
+
+```
+We are all in the gutter... — Oscar Wilde | Lady Windermere's Fan | 1892
+```
+
+### `verified` — not your field
+
+A quotation must be `verified` to appear in the **full-bleed interstitial band**. Unverified ones
+still run in the drifting line and the margins, so nothing is lost by leaving it alone.
+
+The importer sets `verified: false` on everything, deliberately. It gets flipped only when someone
+has actually found the source. This exists because a misattributed quote on a site about
+discernment is the one error a reader remembers — and roughly a quarter of what circulates online
+is misattributed. The library currently carries ten flagged as disputed, including the Twain, the
+Jefferson and the Confucius, each with a private `note` explaining why. Notes never render.
 
 ### Where they show up — decided by length, automatically
 
 | Words | Appears in |
 |---|---|
 | ≤ 9 | the drifting line, bottom of screen |
-| ≤ 20 | the masthead slot |
 | ≤ 24 | the margins beside articles |
-| ≤ 34 | full-bleed interstitials |
+| ≤ 34 | full-bleed interstitials (verified only) |
 | 35+ | nothing — too long to be wallpaper. Use it inside a piece instead. |
 
 **You don't set this.** Just write the line.
 
-### JSON rules that will bite you
+### If it breaks anyway
 
-- Comma **between** every object, **none after the last one**
-- Straight double quotes `"` only — not curly `"` `"`. If you paste from Notes or a browser, retype the quotes.
-- An apostrophe inside text is fine: `"It is not a discovery."`
-- A double quote inside text must be escaped: `"He said \"no\" twice."`
-
-**Check before you commit:**
+If `quotes.json` ever gets edited by hand and stops parsing, the importer refuses to run rather than
+making it worse, and tells you the fix:
 
 ```bash
-python3 -c "import json;d=json.load(open('src/data/quotes.json'));print(len(d),'quotes OK')"
+git checkout src/data/quotes.json
 ```
 
-A malformed row also fails `npm run build` and names the row index.
+That discards the hand edits and restores the last version that worked. Nothing published is lost —
+only uncommitted changes.
 
 ### Aim for ~40, and spread the authors
 
-Three quotes isn't wallpaper, it's a repeat. Around forty is where the layer starts feeling
-ambient. Spread them — one author dominating reads as one book read once, not as taste.
+Around forty is where the layer starts feeling ambient rather than repetitive. Spread them — one
+author dominating reads as one book read once, not as taste. Anything over a third is too much.
 
 ---
 
@@ -446,7 +478,7 @@ Test a link after deploying by pasting it into any chat app, or:
 |---|---|
 | `Invalid enum value` | A `topic`, `form` or `activity` that isn't on the lists above. Check spelling — they're all lowercase. |
 | `Required` | A missing required field. Articles need `title`, `date`, `topic`, `excerpt`. |
-| `quotes.json row N` | Bad JSON — usually a curly quote, or a missing/extra comma |
+| `quotes.json row N` | Bad JSON. Fix: `git checkout src/data/quotes.json`, then load via `npm run quotes:import` — never by hand |
 | `Expected date` | Date needs to be `2026-08-27` with no quotes |
 
 Two rules that save you:
