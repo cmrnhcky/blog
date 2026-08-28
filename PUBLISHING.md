@@ -44,7 +44,7 @@ Netlify rebuilds automatically. Live in about a minute at **https://cmrnhcky.com
 
 ## 1. Quotes — the ambient layer
 
-**The spreadsheet is the master.** `quotes database.csv`, in the project root, is the source of
+**The spreadsheet is the master.** `quotes-database.csv`, in the project root, is the source of
 truth. `src/data/quotes.json` is derived from it and should never be opened by hand — one missing
 comma and the site stops building.
 

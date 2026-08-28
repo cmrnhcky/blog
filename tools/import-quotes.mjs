@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* ────────────────────────────────────────────────────────────────
-   quotes database.csv  →  src/data/quotes.json
+   quotes-database.csv  →  src/data/quotes.json
 
      npm run quotes:import              (sync from the sheet)
      npm run quotes:import -- --dry     (preview, writes nothing)
