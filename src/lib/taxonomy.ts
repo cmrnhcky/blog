@@ -29,6 +29,7 @@ export const TOPICS = {
   style:      { name: 'Style',      blurb: 'Wear this, not that.' },
   fatherhood: { name: 'Fatherhood', blurb: 'Oscar, and the mornings. First generation, figuring it out.' },
   sundries:   { name: 'Sundries',   blurb: 'Music, football, whatever was on. The rest of it.' },
+  building:   { name: 'Building',   blurb: 'The agency in public. What shipped, what broke, what it cost.' },
 } as const satisfies Record<string, Section>;
 
 export const FORMS = {
@@ -51,9 +52,11 @@ export const formName  = (slug: FormSlug):  string => FORMS[slug].name;
 export const isTopic = (slug: string): slug is TopicSlug => slug in TOPICS;
 export const isForm  = (slug: string): slug is FormSlug  => slug in FORMS;
 
-/* Every page `src/pages/[section]/index.astro` builds. Exactly nine —
-   this is not a catch-all, so /living, /cameron and /archive are
-   untouched. Re-check for collisions if a topic is ever added. */
+/* Every page `src/pages/[section]/index.astro` builds — one per entry
+   above, no more. This is not a catch-all, so /living, /cameron,
+   /listening, /now, /archive, /thank-you and /404 are untouched.
+   Checked for collisions when `building` was added 2026-09-01; check
+   again before adding another. */
 export function allSections(): Array<{ slug: SectionSlug; kind: 'topic' | 'form' } & Section> {
   return [
     ...(Object.entries(TOPICS) as [TopicSlug, Section][]).map(([slug, s]) => ({ slug, kind: 'topic' as const, ...s })),

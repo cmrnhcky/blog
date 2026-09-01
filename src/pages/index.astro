@@ -15,6 +15,13 @@ const latestPosts = allPosts
   .slice(0, 3);
 
 const topics = allSections().filter(s => s.kind === 'topic');
+
+/* Spelled out, not a numeral — this is a typographic publication. Derived from
+   the taxonomy rather than hardcoded: this label said "Six ways in." and was
+   caught only because `building` was added by hand on 2026-09-01. A count
+   written in prose beside a list that grows is a lie waiting for its turn. */
+const NUMBER_WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+const waysIn = NUMBER_WORDS[topics.length] ?? String(topics.length);
 const issue = await currentIssue();
 const occasions = allOccasions();
 ---
@@ -96,7 +103,7 @@ const occasions = allOccasions();
   <!-- ═══ TOPICS ═══════════════════════════════════════════════ -->
   <section class="section" id="topics">
     <div class="container--wide">
-      <span class="section-label">Six ways in.</span>
+      <span class="section-label">{waysIn} ways in.</span>
       <div class="pillars">
         {topics.map((t, i) => (
           <a href={`/${t.slug}`} class="pillar-card fade-up" style={`--n:${i}`}>
